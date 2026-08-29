@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MenuAR - Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ============ TOAST de confirmación ============ -->
+    <div class="toast" id="toast">
+        <img id="toastImg" src="" alt="">
+        <div class="toast-info">
+            <span id="toastName"></span>
+            <span class="toast-sub">agregado a tu pedido ✓</span>
+        </div>
+    </div>
+
+    <!-- ============ BOTÓN FLOTANTE CARRITO ============ -->
+    <button class="cart-fab" id="cartFab" aria-label="Ver pedido">
+        🛒
+        <span class="cart-fab-badge" id="cartFabBadge" style="display:none">0</span>
+    </button>
+
+    <div class="phone-frame">
+
+        <!-- NAV -->
+        <nav class="top-nav">
+            <div class="brand">
+                <img src="Images/LogoMenuAr.png" alt="MenuAR Logo" class="brand-icon">
+                <div class="brand-text">
+                    <span class="brand-name">MenuAR</span>
+                    <span class="brand-sub">EST. 2025</span>
+                </div>
+            </div>
+            <!-- BANNER MESA -->
+            <div class="mesa-banner" id="mesaBanner" style="display:none">
+                <span class="mesa-icon">🍽️</span>
+                <span id="mesaLabel">Mesa —</span>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn active" data-view="view-menu">Menú</button>
+                <button class="nav-btn" data-view="view-hotspot">Vista 360° / Hotspot</button>
+            </div>
+        </nav>
+
+        <!-- ============ VISTA MENÚ ============ -->
+        <section class="view active" id="view-menu">
+            <div class="menu-container">
+                <header class="menu-header animate__animated animate__fadeInDown">
+                    <h1 class="restaurant-name">Bienvenido a MenuAR</h1>
+                    <p class="restaurant-sub">Toca cualquier plato con el ícono <span class="ar-tag">360° AR</span> para verlo en 3D y en tu mesa</p>
+                </header>
+                <main class="menu-grid">
+
+                    <!-- Plato 1 -->
+                    <div class="menu-card animate__animated animate__fadeInUp" style="animation-delay:0.05s">
+                        <div class="image-placeholder">
+                            <img src="Images/papasnativas.jpg" alt="Papas Nativas" class="menu-img">
+                        </div>
+                        <div class="card-info">
+                            <h3>Papas Nativas</h3>
+                            <p class="price">$35.000</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 2: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.1s"
+                         data-model="Model/carrot_cake.glb"
+                         data-poster="Images/cake.png"
+                         data-name="Plato Estrella"
+                         data-price="$17.800"
+                         data-story="Nuestro postre insignia: un volcán de chocolate caliente que se desborda al primer corte, inspirado en la receta original de la abuela de la casa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/carrot_cake.glb" alt="Plato Estrella"
+                                poster="Images/cake.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Plato Estrella</h3>
+                            <p class="price">$17.800</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 3: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.15s"
+                         data-model="Model/drink.glb"
+                         data-poster="Images/drink.png"
+                         data-name="Summer Tea"
+                         data-price="$8.000"
+                         data-story="Una infusión fría de frutos rojos y hierbabuena, preparada al momento y servida con hielo tallado a mano para refrescar tu mesa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/drink.glb" alt="Summer Tea"
+                                poster="Images/drink.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Summer Tea</h3>
+                            <p class="price">$8.000</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 4: Hotspot -->
+                    <div class="menu-card border-gold animate__animated animate__fadeInUp"
+                         style="animation-delay:0.2s"
+                         id="openHotspotBtn">
+                        <span class="ar-badge">360° + Hotspot</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/animacion_total.glb" alt="Hamburguesa Insignia"
+                                poster="Images/burguer.png" loading="eager"
+                                auto-rotate animation-name="*">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Hamburguesa Insignia</h3>
+                            <p class="price">$38.000</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 5: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.15s"
+                         data-model="Model/sushi.glb"
+                         data-poster="Images/sushi.png"
+                         data-name="Sushi Boat"
+                         data-price="$32.000"
+                         data-story="Una selección exclusiva de nuestros mejores rollos, elaborados al momento con pesca fresca del día y cortes de precisión artesanal, perfectos para compartir y llenar de color tu mesa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/sushi.glb" alt="Sushi Boat"
+                                poster="Images/sushi.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Sushi Boat</h3>
+                            <p class="price">$32.000</p>
+                        </div>
+                    </div>
+
+                    <!-- DUPLICADOS DE PRUEBAS BLOQUE 1-->
+
+                    <!-- Plato 2: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.1s"
+                         data-model="Model/carrot_cake.glb"
+                         data-poster="Images/cake.png"
+                         data-name="Plato Estrella"
+                         data-price="$17.800"
+                         data-story="Nuestro postre insignia: un volcán de chocolate caliente que se desborda al primer corte, inspirado en la receta original de la abuela de la casa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/carrot_cake.glb" alt="Plato Estrella"
+                                poster="Images/cake.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Plato Estrella</h3>
+                            <p class="price">$17.800</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 3: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.15s"
+                         data-model="Model/drink.glb"
+                         data-poster="Images/drink.png"
+                         data-name="Summer Tea"
+                         data-price="$8.000"
+                         data-story="Una infusión fría de frutos rojos y hierbabuena, preparada al momento y servida con hielo tallado a mano para refrescar tu mesa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/drink.glb" alt="Summer Tea"
+                                poster="Images/drink.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Summer Tea</h3>
+                            <p class="price">$8.000</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 4: Hotspot -->
+                    <div class="menu-card border-gold animate__animated animate__fadeInUp"
+                         style="animation-delay:0.2s"
+                         id="openHotspotBtn">
+                        <span class="ar-badge">360° + Hotspot</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/animacion_total.glb" alt="Hamburguesa Insignia"
+                                poster="Images/burguer.png" loading="eager"
+                                auto-rotate animation-name="*">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Hamburguesa Insignia</h3>
+                            <p class="price">$38.000</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 5: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.15s"
+                         data-model="Model/sushi.glb"
+                         data-poster="Images/sushi.png"
+                         data-name="Sushi Boat"
+                         data-price="$32.000"
+                         data-story="Una selección exclusiva de nuestros mejores rollos, elaborados al momento con pesca fresca del día y cortes de precisión artesanal, perfectos para compartir y llenar de color tu mesa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/sushi.glb" alt="Sushi Boat"
+                                poster="Images/sushi.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Sushi Boat</h3>
+                            <p class="price">$32.000</p>
+                        </div>
+                    </div>
+
+                    <!-- DUPLICADOS DE PRUEBAS BLOQUE 2 -->
+
+                    <!-- Plato 2: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.1s"
+                         data-model="Model/carrot_cake.glb"
+                         data-poster="Images/cake.png"
+                         data-name="Plato Estrella"
+                         data-price="$17.800"
+                         data-story="Nuestro postre insignia: un volcán de chocolate caliente que se desborda al primer corte, inspirado en la receta original de la abuela de la casa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/carrot_cake.glb" alt="Plato Estrella"
+                                poster="Images/cake.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Plato Estrella</h3>
+                            <p class="price">$17.800</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 3: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.15s"
+                         data-model="Model/drink.glb"
+                         data-poster="Images/drink.png"
+                         data-name="Summer Tea"
+                         data-price="$8.000"
+                         data-story="Una infusión fría de frutos rojos y hierbabuena, preparada al momento y servida con hielo tallado a mano para refrescar tu mesa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/drink.glb" alt="Summer Tea"
+                                poster="Images/drink.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Summer Tea</h3>
+                            <p class="price">$8.000</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 4: Hotspot -->
+                    <div class="menu-card border-gold animate__animated animate__fadeInUp"
+                         style="animation-delay:0.2s"
+                         id="openHotspotBtn">
+                        <span class="ar-badge">360° + Hotspot</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/animacion_total.glb" alt="Hamburguesa Insignia"
+                                poster="Images/burguer.png" loading="eager"
+                                auto-rotate animation-name="*">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Hamburguesa Insignia</h3>
+                            <p class="price">$38.000</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 5: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.15s"
+                         data-model="Model/sushi.glb"
+                         data-poster="Images/sushi.png"
+                         data-name="Sushi Boat"
+                         data-price="$32.000"
+                         data-story="Una selección exclusiva de nuestros mejores rollos, elaborados al momento con pesca fresca del día y cortes de precisión artesanal, perfectos para compartir y llenar de color tu mesa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/sushi.glb" alt="Sushi Boat"
+                                poster="Images/sushi.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Sushi Boat</h3>
+                            <p class="price">$32.000</p>
+                        </div>
+                    </div>
+
+                    <!-- DUPLICADOS DE PRUEBAS BLOQUE 3 -->
+
+                    <!-- Plato 2: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.1s"
+                         data-model="Model/carrot_cake.glb"
+                         data-poster="Images/cake.png"
+                         data-name="Plato Estrella"
+                         data-price="$17.800"
+                         data-story="Nuestro postre insignia: un volcán de chocolate caliente que se desborda al primer corte, inspirado en la receta original de la abuela de la casa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/carrot_cake.glb" alt="Plato Estrella"
+                                poster="Images/cake.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Plato Estrella</h3>
+                            <p class="price">$17.800</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 3: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.15s"
+                         data-model="Model/drink.glb"
+                         data-poster="Images/drink.png"
+                         data-name="Summer Tea"
+                         data-price="$8.000"
+                         data-story="Una infusión fría de frutos rojos y hierbabuena, preparada al momento y servida con hielo tallado a mano para refrescar tu mesa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/drink.glb" alt="Summer Tea"
+                                poster="Images/drink.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Summer Tea</h3>
+                            <p class="price">$8.000</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 4: Hotspot -->
+                    <div class="menu-card border-gold animate__animated animate__fadeInUp"
+                         style="animation-delay:0.2s"
+                         id="openHotspotBtn">
+                        <span class="ar-badge">360° + Hotspot</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/animacion_total.glb" alt="Hamburguesa Insignia"
+                                poster="Images/burguer.png" loading="eager"
+                                auto-rotate animation-name="*">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Hamburguesa Insignia</h3>
+                            <p class="price">$38.000</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 5: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.15s"
+                         data-model="Model/sushi.glb"
+                         data-poster="Images/sushi.png"
+                         data-name="Sushi Boat"
+                         data-price="$32.000"
+                         data-story="Una selección exclusiva de nuestros mejores rollos, elaborados al momento con pesca fresca del día y cortes de precisión artesanal, perfectos para compartir y llenar de color tu mesa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/sushi.glb" alt="Sushi Boat"
+                                poster="Images/sushi.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Sushi Boat</h3>
+                            <p class="price">$32.000</p>
+                        </div>
+                    </div>
+
+                    <!-- DUPLICADOS DE PRUEBAS BLOQUE 4-->
+
+                    <!-- Plato 2: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.1s"
+                         data-model="Model/carrot_cake.glb"
+                         data-poster="Images/cake.png"
+                         data-name="Plato Estrella"
+                         data-price="$17.800"
+                         data-story="Nuestro postre insignia: un volcán de chocolate caliente que se desborda al primer corte, inspirado en la receta original de la abuela de la casa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/carrot_cake.glb" alt="Plato Estrella"
+                                poster="Images/cake.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Plato Estrella</h3>
+                            <p class="price">$17.800</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 3: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.15s"
+                         data-model="Model/drink.glb"
+                         data-poster="Images/drink.png"
+                         data-name="Summer Tea"
+                         data-price="$8.000"
+                         data-story="Una infusión fría de frutos rojos y hierbabuena, preparada al momento y servida con hielo tallado a mano para refrescar tu mesa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/drink.glb" alt="Summer Tea"
+                                poster="Images/drink.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Summer Tea</h3>
+                            <p class="price">$8.000</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 4: Hotspot -->
+                    <div class="menu-card border-gold animate__animated animate__fadeInUp"
+                         style="animation-delay:0.2s"
+                         id="openHotspotBtn">
+                        <span class="ar-badge">360° + Hotspot</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/animacion_total.glb" alt="Hamburguesa Insignia"
+                                poster="Images/burguer.png" loading="eager"
+                                auto-rotate animation-name="*">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Hamburguesa Insignia</h3>
+                            <p class="price">$38.000</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 5: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.15s"
+                         data-model="Model/sushi.glb"
+                         data-poster="Images/sushi.png"
+                         data-name="Sushi Boat"
+                         data-price="$32.000"
+                         data-story="Una selección exclusiva de nuestros mejores rollos, elaborados al momento con pesca fresca del día y cortes de precisión artesanal, perfectos para compartir y llenar de color tu mesa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/sushi.glb" alt="Sushi Boat"
+                                poster="Images/sushi.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Sushi Boat</h3>
+                            <p class="price">$32.000</p>
+                        </div>
+                    </div>
+
+                    <!-- DUPLICADOS DE PRUEBAS BLOQUE 5-->
+
+                    <!-- Plato 2: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.1s"
+                         data-model="Model/carrot_cake.glb"
+                         data-poster="Images/cake.png"
+                         data-name="Plato Estrella"
+                         data-price="$17.800"
+                         data-story="Nuestro postre insignia: un volcán de chocolate caliente que se desborda al primer corte, inspirado en la receta original de la abuela de la casa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/carrot_cake.glb" alt="Plato Estrella"
+                                poster="Images/cake.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Plato Estrella</h3>
+                            <p class="price">$17.800</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 3: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.15s"
+                         data-model="Model/drink.glb"
+                         data-poster="Images/drink.png"
+                         data-name="Summer Tea"
+                         data-price="$8.000"
+                         data-story="Una infusión fría de frutos rojos y hierbabuena, preparada al momento y servida con hielo tallado a mano para refrescar tu mesa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/drink.glb" alt="Summer Tea"
+                                poster="Images/drink.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Summer Tea</h3>
+                            <p class="price">$8.000</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 4: Hotspot -->
+                    <div class="menu-card border-gold animate__animated animate__fadeInUp"
+                         style="animation-delay:0.2s"
+                         id="openHotspotBtn">
+                        <span class="ar-badge">360° + Hotspot</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/animacion_total.glb" alt="Hamburguesa Insignia"
+                                poster="Images/burguer.png" loading="eager"
+                                auto-rotate animation-name="*">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Hamburguesa Insignia</h3>
+                            <p class="price">$38.000</p>
+                        </div>
+                    </div>
+
+                    <!-- Plato 5: 360° AR -->
+                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.15s"
+                         data-model="Model/sushi.glb"
+                         data-poster="Images/sushi.png"
+                         data-name="Sushi Boat"
+                         data-price="$32.000"
+                         data-story="Una selección exclusiva de nuestros mejores rollos, elaborados al momento con pesca fresca del día y cortes de precisión artesanal, perfectos para compartir y llenar de color tu mesa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/sushi.glb" alt="Sushi Boat"
+                                poster="Images/sushi.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Sushi Boat</h3>
+                            <p class="price">$32.000</p>
+                        </div>
+                    </div>
+
+                </main>
+            </div>
+        </section>
+
+        <!-- ============ VISTA HOTSPOT ============ -->
+        <section class="view" id="view-hotspot">
+            <div class="hotspot-container">
+                <header class="hotspot-header">
+                    <h2>Hamburguesa Insignia</h2>
+                    <p>Toca cada punto para descubrir los ingredientes</p>
+                </header>
+                <div class="hotspot-stage">
+                    <model-viewer
+                        src="Model/animacion_total.glb" alt="Hamburguesa"
+                        poster="Images/burguer.png"
+                        class="hotspot-image" id="hotspotImage"
+                        animation-name="*" camera-controls touch-action="none"
+                        camera-orbit="0deg 75deg 240%" field-of-view="30deg"
+                        min-camera-orbit="auto auto 80%" max-camera-orbit="auto auto 250%">
+                    </model-viewer>
+                    <button class="hotspot-point" style="top:24%; left:50%;" data-info="info-pan">+</button>
+                    <button class="hotspot-point" style="top:65%; left:50%;" data-info="info-carne">+</button>
+                    <button class="hotspot-point" style="top:55%; left:50%;" data-info="info-queso">+</button>
+                    <button class="hotspot-point" style="top:39%; left:50%;" data-info="info-vegetales">+</button>
+                    <button class="hotspot-point" style="top:80%; left:50%;" data-info="info-salsa">+</button>
+                    <div class="hotspot-card" id="info-pan"><h4>Pan Brioche</h4><p>Pan artesanal horneado diariamente, suave y ligeramente dulce.</p></div>
+                    <div class="hotspot-card" id="info-carne"><h4>Carne Premium</h4><p>Carne de res 100% madurada en la casa, sellada al carbón.</p></div>
+                    <div class="hotspot-card" id="info-queso"><h4>Queso Cheddar</h4><p>Queso madurado, fundido al punto para una textura cremosa.</p></div>
+                    <div class="hotspot-card" id="info-vegetales"><h4>Vegetales Frescos</h4><p>Lechuga crocante, tomate y cebolla morada cortados a diario.</p></div>
+                    <div class="hotspot-card" id="info-salsa"><h4>Salsa de la Casa</h4><p>Receta secreta, ahumada y con un toque picante.</p></div>
+                </div>
+                <button class="order-btn-flat" id="orderFromHotspot">¡Lo quiero!</button>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ============ MODAL 3D / AR ============ -->
+    <div class="modal-overlay" id="3dModal">
+        <div class="modal-content">
+            <button class="back-btn" id="closeModalBtn">Volver al menú</button>
+
+            <div class="ar-invite animate__animated animate__fadeIn">
+                <div class="ar-invite-left">
+                    <div class="ar-invite-icon">📱</div>
+                </div>
+                <div class="ar-invite-right">
+                    <p><strong>¿Quieres verlo en tu mesa?</strong><br>Colócalo en tamaño real frente a ti antes de ordenar.</p>
+                    <button class="ar-launch-btn" id="arLaunchBtn">
+                        <span>📸</span> Abrir cámara AR
+                    </button>
+                </div>
+            </div>
+
+            <div class="model-stage animate__animated animate__zoomIn">
+                <model-viewer id="modelViewer"
+                    src="Model/dish.glb" alt="Plato en 3D" poster="Images/dish-poster.png"
+                    auto-rotate camera-controls touch-action="none"
+                    ar ar-modes="webxr scene-viewer quick-look">
+                    <button slot="ar-button" id="nativeArBtn" class="ar-button-hidden"></button>
+                </model-viewer>
+                <button class="story-toggle" id="storyToggle">📖</button>
+                <div class="story-card" id="storyCard">
+                    <p class="dish-story"></p>
+                </div>
+            </div>
+
+            <h2 class="dish-title animate__animated animate__fadeInUp"></h2>
+            <p class="dish-price animate__animated animate__fadeInUp" style="animation-delay:0.1s"></p>
+
+            <div class="modal-actions">
+                <button class="order-btn animate__animated animate__pulse animate__infinite animate__slow" id="orderFromModal">¡Lo quiero!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ MODAL CARRITO ============ -->
+    <div class="modal-overlay" id="cartModal">
+        <div class="modal-content cart-content">
+            <button class="back-btn" id="closeCartBtn">Volver al menú</button>
+            <h2 class="cart-title">Tu pedido</h2>
+
+            <div class="cart-list" id="cartList"></div>
+
+            <div class="cart-total-row">
+                <span class="cart-total-label">Total</span>
+                <span class="cart-total-value" id="cartTotal">$0</span>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-secondary" id="keepBrowsingBtn">Seguir viendo el menú</button>
+                <button class="order-btn" id="confirmCartBtn">Confirmar pedido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ MODAL ÉXITO ============ -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content success-content">
+            <div class="success-icon animate__animated animate__bounceIn">✓</div>
+            <h3 class="success-title animate__animated animate__fadeInUp">¡Pedido recibido!</h3>
+            <p class="animate__animated animate__fadeInUp" style="animation-delay:0.1s">Tu pedido ha sido enviado a cocina. En minutos comenzará la preparación.</p>
+            <div class="success-items" id="successItems"></div>
+            <button class="order-btn" id="successCloseBtn">Cerrar</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+</body>
+</html>
