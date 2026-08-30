@@ -6,103 +6,34 @@
     <title>MenuAR — Cocina</title>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0d0d0d; color: #ffffff; min-height: 100vh; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0d0d0d;
-            color: #ffffff;
-            min-height: 100vh;
-        }
-
-        /* ====== HEADER ====== */
-        .chef-header {
-            background-color: #000;
-            border-bottom: 2px solid #d4af37;
-            padding: 16px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-        .chef-brand { display: flex; align-items: center; gap: 12px; }
+        /* HEADER */
+        .chef-header { background-color: #000; border-bottom: 2px solid #d4af37; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; position: sticky; top: 0; z-index: 50; }
         .chef-brand-title { font-size: 22px; font-weight: 800; letter-spacing: 1px; }
         .chef-brand-title span { color: #d4af37; }
         .chef-subtitle { font-size: 11px; color: #888; letter-spacing: 2px; margin-top: 2px; }
-
         .header-right { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-
-        .live-dot {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            color: #4caf50;
-            font-weight: 600;
-        }
-        .live-dot::before {
-            content: '';
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background-color: #4caf50;
-            animation: livePulse 1.5s ease-in-out infinite;
-        }
+        .live-dot { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #4caf50; font-weight: 600; }
+        .live-dot::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background-color: #4caf50; animation: livePulse 1.5s ease-in-out infinite; }
         .live-dot.connecting { color: #f5a623; }
         .live-dot.connecting::before { background-color: #f5a623; }
-        @keyframes livePulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
+        @keyframes livePulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
         .last-updated { font-size: 11px; color: #555; }
-
-        .btn-clear-all {
-            background: transparent;
-            border: 1px solid #444;
-            color: #888;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+        .btn-clear-all { background: transparent; border: 1px solid #444; color: #888; padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
         .btn-clear-all:hover { border-color: #ff5555; color: #ff5555; }
+        .sound-btn { background: transparent; border: 1px solid #333; color: #666; width: 32px; height: 32px; border-radius: 6px; font-size: 16px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .sound-btn:hover { border-color: #d4af37; color: #d4af37; }
+        .sound-btn.muted { opacity: 0.4; }
 
-        /* ====== MODO BANNER (demo / firebase) ====== */
-        .mode-banner {
-            padding: 7px 24px;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        /* MODO BANNER */
+        .mode-banner { padding: 7px 24px; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
         .mode-banner.demo    { background-color: #1a1200; color: #f5a623; border-bottom: 1px solid #2a1e00; }
         .mode-banner.firebase { background-color: #001a08; color: #4caf50; border-bottom: 1px solid #002810; }
 
-        /* ====== STATS BAR ====== */
-        .stats-bar {
-            display: flex;
-            gap: 12px;
-            padding: 14px 24px;
-            background-color: #111;
-            border-bottom: 1px solid #222;
-            flex-wrap: wrap;
-        }
-        .stat-chip {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background-color: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            border-radius: 8px;
-            padding: 8px 14px;
-            font-size: 13px;
-        }
+        /* STATS */
+        .stats-bar { display: flex; gap: 12px; padding: 14px 24px; background-color: #111; border-bottom: 1px solid #222; flex-wrap: wrap; }
+        .stat-chip { display: flex; align-items: center; gap: 8px; background-color: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
         .stat-chip .stat-num { font-size: 22px; font-weight: 800; line-height: 1; }
         .stat-chip .stat-label { color: #888; font-size: 11px; line-height: 1.2; }
         .stat-pendiente .stat-num  { color: #f5a623; }
@@ -110,130 +41,47 @@
         .stat-listo .stat-num      { color: #4caf50; }
         .stat-total .stat-num      { color: #d4af37; }
 
-        /* ====== FILTRO TABS ====== */
-        .filter-tabs {
-            display: flex;
-            gap: 8px;
-            padding: 14px 24px 0;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
+        /* FILTROS */
+        .filter-tabs { display: flex; gap: 8px; padding: 14px 24px 0; overflow-x: auto; scrollbar-width: none; }
         .filter-tabs::-webkit-scrollbar { display: none; }
+        .filter-tab { flex-shrink: 0; background-color: #1a1a1a; border: 1px solid #333; color: #888; padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+        .filter-tab.active, .filter-tab:hover { background-color: #d4af37; color: #111; border-color: #d4af37; }
 
-        .filter-tab {
-            flex-shrink: 0;
-            background-color: #1a1a1a;
-            border: 1px solid #333;
-            color: #888;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-        .filter-tab.active, .filter-tab:hover {
-            background-color: #d4af37;
-            color: #111;
-            border-color: #d4af37;
-        }
+        /* GRID */
+        .orders-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; padding: 16px 24px 32px; }
 
-        /* ====== GRID DE PEDIDOS ====== */
-        .orders-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 16px;
-            padding: 16px 24px 32px;
-        }
-
-        /* ====== TARJETA DE PEDIDO ====== */
-        .order-card {
-            background-color: #1a1a1a;
-            border-radius: 12px;
-            border: 1px solid #2a2a2a;
-            overflow: hidden;
-            animation: slideInCard 0.35s ease both;
-            display: flex;
-            flex-direction: column;
-        }
-        @keyframes slideInCard {
-            from { opacity: 0; transform: translateY(16px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .order-card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 16px 10px;
-            border-bottom: 1px solid #2a2a2a;
-        }
-
+        /* TARJETA */
+        .order-card { background-color: #1a1a1a; border-radius: 12px; border: 1px solid #2a2a2a; overflow: hidden; animation: slideInCard 0.35s ease both; display: flex; flex-direction: column; }
+        @keyframes slideInCard { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        .order-card-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; border-bottom: 1px solid #2a2a2a; }
         .order-mesa     { font-size: 22px; font-weight: 800; color: #d4af37; letter-spacing: 0.5px; }
         .order-mesa-sub { font-size: 11px; color: #555; margin-top: 1px; }
-
-        .order-time         { font-size: 11px; color: #555; text-align: right; }
+        .order-origen   { font-size: 10px; color: #666; margin-top: 2px; }
+        .order-time     { font-size: 11px; color: #555; text-align: right; }
         .order-time .elapsed { font-size: 20px; font-weight: 700; color: #888; display: block; line-height: 1; }
-
-        .order-items {
-            padding: 12px 16px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .order-item-row  { display: flex; align-items: center; gap: 10px; }
-        .order-item-img  { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; background-color: #2a2a2a; flex-shrink: 0; }
-        .order-item-name { flex: 1; font-size: 13px; color: #eee; font-weight: 500; }
-        .order-item-price { font-size: 12px; color: #d4af37; font-weight: 700; white-space: nowrap; }
-
-        .order-total-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 16px;
-            border-top: 1px solid #2a2a2a;
-            background-color: #151515;
-        }
-        .order-total-label { font-size: 12px; color: #666; }
-        .order-total-value { font-size: 18px; font-weight: 800; color: #d4af37; }
-
+        .order-items { padding: 12px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .order-item-row { display: flex; align-items: center; gap: 10px; }
+        .order-item-img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; background-color: #2a2a2a; flex-shrink: 0; }
+        .order-item-name { flex: 1; font-size: 14px; color: #eee; font-weight: 600; }
+        /* SIN precio en cocina */
         .order-actions { padding: 10px 16px 14px; display: flex; gap: 8px; }
-
-        .estado-btn {
-            flex: 1;
-            padding: 9px 10px;
-            border-radius: 8px;
-            border: none;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            letter-spacing: 0.3px;
-        }
+        .estado-btn { flex: 1; padding: 9px 10px; border-radius: 8px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px; }
         .btn-preparando { background-color: rgba(33,150,243,0.15); color: #2196f3; border: 1px solid rgba(33,150,243,0.3); }
         .btn-preparando:hover, .btn-preparando.active { background-color: #2196f3; color: #fff; }
-
         .btn-listo { background-color: rgba(76,175,80,0.15); color: #4caf50; border: 1px solid rgba(76,175,80,0.3); }
         .btn-listo:hover, .btn-listo.active { background-color: #4caf50; color: #fff; }
-
-        .btn-entregado { background-color: rgba(100,100,100,0.15); color: #888; border: 1px solid rgba(100,100,100,0.3); padding: 9px 8px; }
-        .btn-entregado:hover { background-color: #555; color: #fff; }
-
         .estado-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase; }
         .badge-pendiente  { background-color: rgba(245,166,35,0.2);  color: #f5a623; border: 1px solid rgba(245,166,35,0.3); }
         .badge-preparando { background-color: rgba(33,150,243,0.2);  color: #2196f3; border: 1px solid rgba(33,150,243,0.3); }
         .badge-listo      { background-color: rgba(76,175,80,0.2);   color: #4caf50; border: 1px solid rgba(76,175,80,0.3); }
-        .badge-entregado  { background-color: rgba(100,100,100,0.15); color: #666;   border: 1px solid #333; }
 
-        /* ====== EMPTY STATE ====== */
-        .empty-state { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #333; }
+        /* EMPTY */
+        .empty-state { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: #333; }
         .empty-state .empty-icon { font-size: 64px; margin-bottom: 16px; }
         .empty-state h3 { font-size: 18px; color: #444; margin-bottom: 8px; }
         .empty-state p  { font-size: 13px; color: #333; line-height: 1.5; }
 
-        /* ====== TOAST CHEF ====== */
+        /* TOAST — sin rebote, entra y se queda */
         .chef-toast {
             position: fixed;
             top: -80px;
@@ -242,55 +90,56 @@
             border: 1px solid #d4af37;
             border-radius: 10px;
             padding: 12px 18px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #d4af37;
+            font-size: 14px; font-weight: 600; color: #d4af37;
             z-index: 9999;
-            transition: top 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: top 0.35s ease;   /* ease simple, sin bounce */
             box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            display: flex; align-items: center; gap: 10px;
+            max-width: 320px;
         }
         .chef-toast.show { top: 80px; }
 
-        /* ====== NUEVO PEDIDO FLASH ====== */
-        @keyframes newOrderFlash {
-            0%, 100% { border-color: #2a2a2a; }
-            50% { border-color: #d4af37; box-shadow: 0 0 20px rgba(212,175,55,0.3); }
-        }
+        /* Flash borde en tarjeta nueva */
+        @keyframes newOrderFlash { 0%,100%{border-color:#2a2a2a} 50%{border-color:#d4af37;box-shadow:0 0 20px rgba(212,175,55,0.3)} }
         .order-card.new-order { animation: newOrderFlash 1s ease 3, slideInCard 0.35s ease both; }
 
-        /* ====== SONIDO BUTTON ====== */
-        .sound-btn {
-            background: transparent;
-            border: 1px solid #333;
-            color: #666;
-            width: 32px; height: 32px;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .sound-btn:hover { border-color: #d4af37; color: #d4af37; }
-        .sound-btn.muted { opacity: 0.4; }
-
-        /* ====== RESPONSIVE ====== */
         @media (max-width: 600px) {
             .chef-header { padding: 12px 16px; }
             .stats-bar   { padding: 10px 16px; }
             .filter-tabs { padding: 10px 16px 0; }
             .orders-grid { padding: 12px 16px 24px; grid-template-columns: 1fr; }
         }
+
+        /* MODAL CONFIRMAR LIMPIAR LISTOS (solo vista del chef) */
+        .chef-modal-overlay {
+            display: none; position: fixed; top:0; left:0; width:100vw; height:100vh;
+            background-color: rgba(0,0,0,0.85); z-index: 9000;
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        .chef-modal-overlay.active { display: flex; }
+        .chef-modal {
+            background-color: #1a1a1a; border: 1px solid #d4af37; border-radius: 16px;
+            padding: 24px; width: 100%; max-width: 400px;
+            display: flex; flex-direction: column; gap: 14px;
+        }
+        .chef-modal h2 { font-size: 18px; color: #fff; }
+        .chef-modal p { font-size: 13px; color: #aaa; line-height: 1.5; }
+        .chef-modal-btn-primary {
+            width: 100%; background: linear-gradient(135deg, #d4af37, #f5d76e);
+            color: #111; border: none; border-radius: 10px; padding: 13px 0;
+            font-size: 14px; font-weight: 800; cursor: pointer; letter-spacing: 0.3px;
+        }
+        .chef-modal-btn-secondary {
+            width: 100%; background: transparent; color: #888; border: 2px solid #333;
+            border-radius: 10px; padding: 11px 0; font-size: 13px; font-weight: 700; cursor: pointer;
+        }
+        .chef-modal-btn-secondary:hover { border-color: #d4af37; color: #d4af37; }
     </style>
 </head>
 <body>
 
-    <!-- Toast nuevo pedido -->
-    <div class="chef-toast" id="chefToast">🔔 <span id="chefToastMsg">Nuevo pedido</span></div>
+    <div class="chef-toast" id="chefToast"><span id="chefToastMsg">Nuevo pedido</span></div>
 
-    <!-- HEADER -->
     <header class="chef-header">
         <div class="chef-brand">
             <div>
@@ -301,55 +150,53 @@
         <div class="header-right">
             <div class="live-dot connecting" id="liveStatus">Conectando...</div>
             <div class="last-updated" id="lastUpdated">—</div>
-            <button class="sound-btn" id="soundBtn" title="Silenciar alertas">🔔</button>
-            <button class="btn-clear-all" id="btnClearAll">Limpiar entregados</button>
+            <button class="sound-btn" id="soundBtn" title="Silenciar">🔔</button>
+            <button class="btn-clear-all" id="btnClearAll">Limpiar listos (solo mi pantalla)</button>
         </div>
     </header>
 
-    <!-- BANNER MODO -->
     <div class="mode-banner demo" id="modeBanner">
-        ⚠️ MODO DEMO — Los pedidos se leen de este navegador. Configura Firebase para recibir pedidos desde cualquier dispositivo.
+        ⚠️ MODO DEMO — Configura Firebase para recibir pedidos desde cualquier dispositivo.
     </div>
 
-    <!-- STATS -->
     <div class="stats-bar">
-        <div class="stat-chip stat-pendiente">
-            <div><div class="stat-num" id="statPendiente">0</div><div class="stat-label">Pendientes</div></div>
-        </div>
-        <div class="stat-chip stat-preparando">
-            <div><div class="stat-num" id="statPreparando">0</div><div class="stat-label">Preparando</div></div>
-        </div>
-        <div class="stat-chip stat-listo">
-            <div><div class="stat-num" id="statListo">0</div><div class="stat-label">Listos</div></div>
-        </div>
-        <div class="stat-chip stat-total">
-            <div><div class="stat-num" id="statTotal">0</div><div class="stat-label">Total hoy</div></div>
-        </div>
+        <div class="stat-chip stat-pendiente"><div><div class="stat-num" id="statPendiente">0</div><div class="stat-label">Pendientes</div></div></div>
+        <div class="stat-chip stat-preparando"><div><div class="stat-num" id="statPreparando">0</div><div class="stat-label">Preparando</div></div></div>
+        <div class="stat-chip stat-listo"><div><div class="stat-num" id="statListo">0</div><div class="stat-label">Listos</div></div></div>
+        <div class="stat-chip stat-total"><div><div class="stat-num" id="statTotal">0</div><div class="stat-label">Total hoy</div></div></div>
     </div>
 
-    <!-- FILTROS -->
     <div class="filter-tabs">
         <button class="filter-tab active" data-filter="todos">Todos</button>
         <button class="filter-tab" data-filter="pendiente">🟡 Pendientes</button>
         <button class="filter-tab" data-filter="preparando">🔵 Preparando</button>
         <button class="filter-tab" data-filter="listo">🟢 Listos</button>
-        <button class="filter-tab" data-filter="entregado">✓ Entregados</button>
     </div>
 
-    <!-- GRID -->
     <div class="orders-grid" id="ordersGrid">
         <div class="empty-state">
             <div class="empty-icon">👨‍🍳</div>
             <h3>Esperando pedidos...</h3>
-            <p>Los pedidos aparecen aquí en tiempo real.<br>Usa la app del cliente para hacer un pedido de prueba.</p>
+            <p>Los pedidos aparecen aquí en tiempo real.</p>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRMAR LIMPIAR LISTOS -->
+    <div class="chef-modal-overlay" id="chefClearModal">
+        <div class="chef-modal">
+            <h2>🧹 Limpiar pedidos listos</h2>
+            <p>
+                Esto solo los quita de <strong>tu pantalla de cocina</strong>. Los pedidos siguen intactos
+                en caja y en los paneles de los meseros hasta que el mesero los marque como entregados —
+                nada se borra realmente.
+            </p>
+            <button class="chef-modal-btn-primary" id="confirmClearAllBtn">Sí, limpiar mi pantalla</button>
+            <button class="chef-modal-btn-secondary" id="cancelClearAllBtn">Cancelar</button>
         </div>
     </div>
 
     <script type="module">
-    // ========================================================
-    //  chef.html — Firebase Realtime (onSnapshot)
-    //  Pega EXACTAMENTE la misma config que en script.js
-    // ========================================================
+    // ── CONFIG Firebase (misma que script.js) ──────────────────
     const FIREBASE_CONFIG = {
         apiKey:            "AIzaSyD3bFl4uHz78sz6_Z2gZgur5l_rJdmqJh4",   // ej: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXX"
         authDomain:        "menuardemo.firebaseapp.com",   // ej: "menuAR-demo.firebaseapp.com"
@@ -358,249 +205,244 @@
         messagingSenderId: "1024512044720",   // ej: "123456789012"
         appId:             "1:1024512044720:web:c148b3c34938e2221c1575"    // ej: "1:123456789012:web:abcdefabcdef"
     };
-
-
     const USE_FIREBASE = FIREBASE_CONFIG.apiKey !== "";
 
-    // ============ ESTADO ============
-    let pedidos       = [];
-    let filtroActual  = "todos";
-    let conocidos     = new Set();
-    let soundEnabled  = true;
-    let chefToastTimer = null;
-    let unsubscribe   = null;   // listener de Firebase
+    // ── ESTADO ────────────────────────────────────────────────
+    let pedidos      = [];
+    let filtroActual = "todos";
+    let conocidos    = new Set();
+    let soundEnabled = true;
+    let toastTimer   = null;
 
-    // ============ FIREBASE INIT ============
+    // IDs que el chef "limpió" de SU propia pantalla — no se tocan los datos reales,
+    // así caja y los meseros los siguen viendo con normalidad.
+    const CHEF_HIDDEN_KEY = "menuAR_chef_ocultos";
+    function getChefHidden() { return new Set(JSON.parse(localStorage.getItem(CHEF_HIDDEN_KEY) || "[]")); }
+    function saveChefHidden(set) { localStorage.setItem(CHEF_HIDDEN_KEY, JSON.stringify([...set])); }
+
+    // ── FIREBASE ──────────────────────────────────────────────
     async function initFirebase() {
-        const { initializeApp }                          = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
-        const { getFirestore, collection, query,
-                orderBy, onSnapshot, doc, updateDoc,
-                deleteDoc, where }                       = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
+        const { getFirestore, collection, query, orderBy,
+                onSnapshot, doc, updateDoc, deleteDoc } =
+            await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
 
         const app = initializeApp(FIREBASE_CONFIG);
         const db  = getFirestore(app);
-        const col = collection(db, "pedidos");
-        const q   = query(col, orderBy("created_at", "desc"));
+        const q   = query(collection(db, "pedidos"), orderBy("created_at", "desc"));
 
         setLiveStatus("En vivo (Firebase)", false);
         setBanner(true);
 
-        // onSnapshot: se ejecuta cada vez que hay un cambio en Firestore
-        unsubscribe = onSnapshot(q, (snapshot) => {
+        onSnapshot(q, snap => {
             const prevIds = new Set(pedidos.map(p => p.id));
-            pedidos = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            pedidos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-            const hayNuevos = pedidos.some(p => !prevIds.has(p.id));
+            // Detectar pedidos nuevos que no estén ya en el panel
+            const nuevos = pedidos.filter(p => !prevIds.has(p.id) && p.estado !== "pagado");
+            if (nuevos.length > 0 && prevIds.size > 0) {
+                mostrarToast("🍽️ Nuevo pedido — " + nuevos.map(p => "Mesa " + p.mesa).join(", "));
+                beepNuevoPedido();
+            }
+
+            // Detectar pedidos que pasaron a "listo" para notificar al mesero
+            // (el cambio ya se guarda en Firestore; el mesero.js lo escucha por su cuenta)
+
             renderPedidos();
             updateStats();
             actualizarHora();
-
-            if (hayNuevos && prevIds.size > 0) {
-                mostrarToast("¡Nuevo pedido recibido!");
-                reproducirSonido();
-            }
-        }, (err) => {
-            console.error("Firebase error:", err);
-            setLiveStatus("Error Firebase", false, true);
         });
 
-        // Exponer updateDoc/deleteDoc para los botones
-        window._fbUpdate = async (id, data) => {
-            await updateDoc(doc(db, "pedidos", id), data);
-        };
-        window._fbDelete = async (id) => {
-            await deleteDoc(doc(db, "pedidos", id));
-        };
+        window._fbUpdate = async (id, data) => await updateDoc(doc(db, "pedidos", id), data);
+        window._fbDelete = async (id) => await deleteDoc(doc(db, "pedidos", id));
     }
 
-    // ============ LOCAL (fallback demo) ============
+    // ── LOCAL (fallback demo) ─────────────────────────────────
     function initLocal() {
         setLiveStatus("Modo demo (localStorage)", true);
         setBanner(false);
         cargarLocal();
-        setInterval(cargarLocal, 4000);    // poll ligero para demo
+        setInterval(cargarLocal, 4000);
     }
 
     function cargarLocal() {
         const raw = JSON.parse(localStorage.getItem("menuAR_pedidos") || "[]").reverse();
         const prevIds = new Set(pedidos.map(p => p.id));
         pedidos = raw;
-        const hayNuevos = pedidos.some(p => !prevIds.has(p.id));
+        const nuevos = pedidos.filter(p => !prevIds.has(p.id));
+        if (nuevos.length > 0 && prevIds.size > 0) {
+            mostrarToast("🍽️ Nuevo pedido recibido");
+            beepNuevoPedido();
+        }
         renderPedidos();
         updateStats();
         actualizarHora();
-        if (hayNuevos && prevIds.size > 0) {
-            mostrarToast("¡Nuevo pedido recibido!");
-            reproducirSonido();
-        }
     }
 
-    // ============ UI helpers ============
-    function setLiveStatus(txt, isDemo, isError = false) {
-        const dot = document.getElementById("liveStatus");
-        dot.textContent = txt;
-        dot.className = "live-dot" + (isDemo || isError ? " connecting" : "");
-    }
-
-    function setBanner(isFirebase) {
-        const b = document.getElementById("modeBanner");
-        if (isFirebase) {
-            b.className = "mode-banner firebase";
-            b.innerHTML = "🔥 FIREBASE CONECTADO — Pedidos en tiempo real desde todos los dispositivos";
-        }
-    }
-
-    // ============ ACTUALIZAR ESTADO ============
+    // ── CAMBIAR ESTADO ────────────────────────────────────────
     window.cambiarEstado = async function(id, estado) {
-        // Optimistic update
         const p = pedidos.find(p => p.id === id);
         if (p) { p.estado = estado; renderPedidos(); updateStats(); }
 
         if (USE_FIREBASE && window._fbUpdate) {
             await window._fbUpdate(id, { estado });
+            // Al marcar listo → notifica al mesero vía campo en Firestore
+            if (estado === "listo") {
+                await window._fbUpdate(id, { estado, listoNotificado: false });
+            }
         } else {
-            // local
             const todos = JSON.parse(localStorage.getItem("menuAR_pedidos") || "[]");
-            const idx   = todos.findIndex(p => p.id === id);
-            if (idx !== -1) { todos[idx].estado = estado; localStorage.setItem("menuAR_pedidos", JSON.stringify(todos)); }
+            const idx = todos.findIndex(p => p.id === id);
+            if (idx !== -1) {
+                todos[idx].estado = estado;
+                if (estado === "listo") todos[idx].listoNotificado = false;
+                localStorage.setItem("menuAR_pedidos", JSON.stringify(todos));
+            }
         }
 
-        if (estado === "listo") mostrarToast("🔔 Pedido listo para entregar");
+        if (estado === "listo") {
+            mostrarToast("✅ Pedido listo — notificando al mesero...");
+        }
     };
 
-    // ============ RENDER ============
+    // ── RENDER ────────────────────────────────────────────────
     function timeAgo(dateStr) {
         const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
-        if (diff < 60)  return diff + "s";
+        if (diff < 60)   return diff + "s";
         if (diff < 3600) return Math.floor(diff / 60) + "min";
         return Math.floor(diff / 3600) + "h";
     }
 
-    function badgeClass(e)  { return { pendiente:"badge-pendiente", preparando:"badge-preparando", listo:"badge-listo", entregado:"badge-entregado" }[e] || "badge-pendiente"; }
-    function badgeLabel(e)  { return { pendiente:"Pendiente", preparando:"Preparando", listo:"¡Listo!", entregado:"Entregado" }[e] || e; }
+    function badgeClass(e) { return {pendiente:"badge-pendiente",preparando:"badge-preparando",listo:"badge-listo"}[e]||"badge-pendiente"; }
+    function badgeLabel(e) { return {pendiente:"Pendiente",preparando:"Preparando",listo:"¡Listo!"}[e]||e; }
 
     function renderPedidos() {
         const grid = document.getElementById("ordersGrid");
+        const chefHidden = getChefHidden();
+        const noOcultos = p => !chefHidden.has(p.id);
 
+        // Cocina nunca muestra pedidos pagados
         const visibles = filtroActual === "todos"
-            ? pedidos.filter(p => p.estado !== "entregado")
-            : pedidos.filter(p => p.estado === filtroActual);
+            ? pedidos.filter(p => (!["listo","pagado","entregado"].includes(p.estado) || filtroActual === "todos") && noOcultos(p))
+            : pedidos.filter(p => p.estado === filtroActual && noOcultos(p));
 
-        if (visibles.length === 0) {
-            grid.innerHTML = `<div class="empty-state">
-                <div class="empty-icon">${filtroActual === "entregado" ? "✅" : "👨‍🍳"}</div>
-                <h3>${filtroActual === "todos" ? "Sin pedidos activos" : "Sin pedidos con estado «" + filtroActual + "»"}</h3>
-                <p>${filtroActual === "todos" ? "Los pedidos aparecen aquí en tiempo real." : "No hay pedidos con este estado."}</p>
-            </div>`;
+        const activos = filtroActual === "todos"
+            ? pedidos.filter(p => !["pagado"].includes(p.estado) && noOcultos(p))
+            : visibles;
+
+        if (activos.length === 0) {
+            grid.innerHTML = `<div class="empty-state"><div class="empty-icon">👨‍🍳</div><h3>Sin pedidos activos</h3><p>Los pedidos aparecen aquí en tiempo real.</p></div>`;
             return;
         }
 
-        grid.innerHTML = visibles.map(p => {
+        grid.innerHTML = activos.map(p => {
             const isNew  = !conocidos.has(p.id);
             const mesa   = p.mesa === 0 ? "Sin mesa" : `Mesa ${p.mesa}`;
-            const items  = (p.items || []).map(item => `
+            const origen = p.origen === "mesero"
+                ? `📋 Tomado por ${p.tomadoPor || "mesero"}`
+                : "📱 Pedido del cliente";
+            // Sin precio en cocina — solo nombre e imagen
+            const items  = (p.items||[]).map(i => `
                 <div class="order-item-row">
-                    <img class="order-item-img" src="${item.poster || ""}" alt="${item.name}" onerror="this.style.display='none'">
-                    <span class="order-item-name">${item.name}</span>
-                    <span class="order-item-price">${item.price}</span>
+                    <img class="order-item-img" src="${i.poster||""}" alt="${i.name}" onerror="this.style.display='none'">
+                    <span class="order-item-name">${i.name}${i.qty > 1 ? " <small style='color:#888'>x"+i.qty+"</small>" : ""}</span>
                 </div>`).join("");
 
-            return `<div class="order-card ${isNew ? "new-order" : ""}" data-id="${p.id}">
+            return `<div class="order-card ${isNew?"new-order":""}" data-id="${p.id}">
                 <div class="order-card-header">
                     <div>
                         <div class="order-mesa">${mesa}</div>
                         <div class="order-mesa-sub">${(p.items||[]).length} ítem(s)</div>
+                        <div class="order-origen">${origen}</div>
                     </div>
                     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
                         <span class="estado-badge ${badgeClass(p.estado)}">${badgeLabel(p.estado)}</span>
-                        <div class="order-time">
-                            <span class="elapsed">${timeAgo(p.created_at)}</span>ago
-                        </div>
+                        <div class="order-time"><span class="elapsed">${timeAgo(p.created_at)}</span>ago</div>
                     </div>
                 </div>
                 <div class="order-items">${items}</div>
-                <div class="order-total-row">
-                    <span class="order-total-label">Total del pedido</span>
-                    <span class="order-total-value">${p.total}</span>
-                </div>
                 <div class="order-actions">
                     <button class="estado-btn btn-preparando ${p.estado==="preparando"?"active":""}"
                         onclick="cambiarEstado('${p.id}','preparando')">🍳 Preparando</button>
                     <button class="estado-btn btn-listo ${p.estado==="listo"?"active":""}"
-                        onclick="cambiarEstado('${p.id}','listo')">✅ Listo</button>
-                    <button class="estado-btn btn-entregado"
-                        onclick="cambiarEstado('${p.id}','entregado')" title="Marcar entregado">🤝</button>
+                        onclick="cambiarEstado('${p.id}','listo')">✅ ¡Listo!</button>
                 </div>
             </div>`;
         }).join("");
 
-        visibles.forEach(p => conocidos.add(p.id));
+        activos.forEach(p => conocidos.add(p.id));
     }
 
     function updateStats() {
-        document.getElementById("statPendiente").textContent  = pedidos.filter(p => p.estado === "pendiente").length;
-        document.getElementById("statPreparando").textContent = pedidos.filter(p => p.estado === "preparando").length;
-        document.getElementById("statListo").textContent      = pedidos.filter(p => p.estado === "listo").length;
-        document.getElementById("statTotal").textContent      = pedidos.length;
+        document.getElementById("statPendiente").textContent  = pedidos.filter(p=>p.estado==="pendiente").length;
+        document.getElementById("statPreparando").textContent = pedidos.filter(p=>p.estado==="preparando").length;
+        document.getElementById("statListo").textContent      = pedidos.filter(p=>p.estado==="listo").length;
+        document.getElementById("statTotal").textContent      = pedidos.filter(p=>p.estado!=="pagado").length;
     }
 
     function actualizarHora() {
         document.getElementById("lastUpdated").textContent =
-            "Actualizado: " + new Date().toLocaleTimeString("es-CO", { hour:"2-digit", minute:"2-digit", second:"2-digit" });
+            "Actualizado: " + new Date().toLocaleTimeString("es-CO",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
     }
 
-    // ============ TOAST ============
+    // ── TOAST (sin rebote) ─────────────────────────────────────
     function mostrarToast(msg) {
         const toast = document.getElementById("chefToast");
         document.getElementById("chefToastMsg").textContent = msg;
-        if (chefToastTimer) clearTimeout(chefToastTimer);
+        if (toastTimer) clearTimeout(toastTimer);
         toast.classList.add("show");
-        chefToastTimer = setTimeout(() => toast.classList.remove("show"), 4000);
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 5000);
     }
 
-    // ============ SONIDO ============
-    function reproducirSonido() {
+    // ── SONIDO nuevo pedido (cocina) ───────────────────────────
+    function beepNuevoPedido() {
         if (!soundEnabled) return;
         try {
-            // Beep sintético con Web Audio API
-            const ctx  = new (window.AudioContext || window.webkitAudioContext)();
-            const osc  = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.type = "sine";
-            osc.frequency.setValueAtTime(880, ctx.currentTime);
-            osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.1);
-            gain.gain.setValueAtTime(0.3, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-            osc.start(ctx.currentTime);
-            osc.stop(ctx.currentTime + 0.4);
+            const ctx = new (window.AudioContext||window.webkitAudioContext)();
+            [880,1100,880].forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const g   = ctx.createGain();
+                osc.connect(g); g.connect(ctx.destination);
+                osc.type = "sine";
+                osc.frequency.value = freq;
+                g.gain.setValueAtTime(0.3, ctx.currentTime + i*0.15);
+                g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i*0.15 + 0.12);
+                osc.start(ctx.currentTime + i*0.15);
+                osc.stop(ctx.currentTime + i*0.15 + 0.15);
+            });
         } catch(e) {}
     }
 
-    // ============ EVENTOS UI ============
+    // ── EVENTOS UI ────────────────────────────────────────────
     document.querySelectorAll(".filter-tab").forEach(tab => {
         tab.addEventListener("click", () => {
-            document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+            document.querySelectorAll(".filter-tab").forEach(t=>t.classList.remove("active"));
             tab.classList.add("active");
             filtroActual = tab.dataset.filter;
             renderPedidos();
         });
     });
 
-    document.getElementById("btnClearAll").addEventListener("click", async () => {
-        const entregados = pedidos.filter(p => p.estado === "entregado");
+    document.getElementById("btnClearAll").addEventListener("click", () => {
+        const listos = pedidos.filter(p => p.estado === "listo" && !getChefHidden().has(p.id));
+        if (listos.length === 0) { mostrarToast("No hay pedidos listos para limpiar"); return; }
+        document.getElementById("chefClearModal").classList.add("active");
+    });
 
-        if (USE_FIREBASE && window._fbDelete) {
-            await Promise.all(entregados.map(p => window._fbDelete(p.id)));
-            // onSnapshot actualizará automáticamente
-        } else {
-            const todos = JSON.parse(localStorage.getItem("menuAR_pedidos") || "[]");
-            localStorage.setItem("menuAR_pedidos", JSON.stringify(todos.filter(p => p.estado !== "entregado")));
-            pedidos = pedidos.filter(p => p.estado !== "entregado");
-            renderPedidos();
-            updateStats();
-        }
+    document.getElementById("cancelClearAllBtn").addEventListener("click", () => {
+        document.getElementById("chefClearModal").classList.remove("active");
+    });
+
+    document.getElementById("confirmClearAllBtn").addEventListener("click", () => {
+        // Solo oculta de la pantalla del chef — NO borra nada de Firestore ni de localStorage.
+        // Caja y los paneles de los meseros siguen viendo estos pedidos con normalidad.
+        const chefHidden = getChefHidden();
+        pedidos.filter(p => p.estado === "listo").forEach(p => chefHidden.add(p.id));
+        saveChefHidden(chefHidden);
+        document.getElementById("chefClearModal").classList.remove("active");
+        renderPedidos();
+        updateStats();
+        mostrarToast("🧹 Tu pantalla fue limpiada (los datos siguen intactos)");
     });
 
     document.getElementById("soundBtn").addEventListener("click", () => {
@@ -610,21 +452,26 @@
         btn.classList.toggle("muted", !soundEnabled);
     });
 
-    // Actualizar "X min ago" cada 30s sin re-render completo
     setInterval(() => {
         document.querySelectorAll(".order-card").forEach(card => {
-            const p = pedidos.find(p => p.id === card.dataset.id);
-            if (p) { const el = card.querySelector(".elapsed"); if (el) el.textContent = timeAgo(p.created_at); }
+            const p = pedidos.find(p=>p.id===card.dataset.id);
+            if (p) { const el = card.querySelector(".elapsed"); if(el) el.textContent = timeAgo(p.created_at); }
         });
     }, 30000);
 
-    // ============ INIT ============
+    // ── INIT ──────────────────────────────────────────────────
+    function setLiveStatus(txt, isDemo) {
+        const dot = document.getElementById("liveStatus");
+        dot.textContent = txt;
+        dot.className = "live-dot" + (isDemo ? " connecting" : "");
+    }
+    function setBanner(isFirebase) {
+        const b = document.getElementById("modeBanner");
+        if (isFirebase) { b.className="mode-banner firebase"; b.innerHTML="🔥 FIREBASE CONECTADO — Pedidos en tiempo real"; }
+    }
+
     if (USE_FIREBASE) {
-        initFirebase().catch(err => {
-            console.error("Error iniciando Firebase:", err);
-            setLiveStatus("Firebase falló → demo", true);
-            initLocal();
-        });
+        initFirebase().catch(err => { console.error(err); setLiveStatus("Firebase falló → demo",true); initLocal(); });
     } else {
         initLocal();
     }

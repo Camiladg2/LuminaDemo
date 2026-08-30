@@ -1,0 +1,427 @@
+/* ============================================================
+   caja.css — Panel de Caja / Facturación — MenuAR
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0d0d0d;
+    color: #ffffff;
+    min-height: 100vh;
+    padding-bottom: 40px;
+}
+
+/* ====== TOAST ====== */
+.c-toast {
+    position: fixed;
+    top: -70px; left: 50%;
+    transform: translateX(-50%);
+    background-color: #1a1a1a;
+    border: 1px solid #d4af37;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 14px; font-weight: 600; color: #d4af37;
+    z-index: 9999;
+    transition: top 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    white-space: nowrap;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+.c-toast.show { top: 80px; }
+
+/* ====== HEADER ====== */
+.c-header {
+    background-color: #000;
+    border-bottom: 2px solid #d4af37;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    position: sticky; top: 0; z-index: 50;
+}
+
+.c-brand-title { font-size: 20px; font-weight: 800; letter-spacing: 1px; }
+.c-brand-title span { color: #d4af37; }
+.c-brand-sub { font-size: 10px; color: #888; letter-spacing: 2px; margin-top: 2px; }
+
+.c-header-right {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+
+.live-dot {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: #4caf50; font-weight: 600;
+}
+.live-dot::before {
+    content: ''; width: 8px; height: 8px; border-radius: 50%;
+    background-color: #4caf50;
+    animation: livePulse 1.5s ease-in-out infinite;
+}
+.live-dot.connecting { color: #f5a623; }
+.live-dot.connecting::before { background-color: #f5a623; }
+@keyframes livePulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* Quick stats */
+.c-quick-stats {
+    display: flex; gap: 16px;
+}
+.c-qs-item { text-align: center; }
+.c-qs-num  { display: block; font-size: 20px; font-weight: 800; color: #fff; line-height: 1; }
+.c-qs-num.gold { color: #d4af37; }
+.c-qs-label { font-size: 10px; color: #555; letter-spacing: 0.5px; }
+
+.c-header-actions { display: flex; align-items: center; gap: 8px; }
+
+.c-btn-icon {
+    background: transparent; border: 1px solid #333;
+    color: #666; width: 32px; height: 32px; border-radius: 6px;
+    font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+}
+.c-btn-icon:hover { border-color: #d4af37; color: #d4af37; }
+.c-btn-icon.muted { opacity: 0.4; }
+
+.c-btn-outline {
+    background: transparent; border: 1px solid #444;
+    color: #888; padding: 6px 14px; border-radius: 6px;
+    font-size: 12px; cursor: pointer; transition: all 0.2s;
+    white-space: nowrap;
+}
+.c-btn-outline:hover { border-color: #d4af37; color: #d4af37; }
+
+.c-btn-danger { border-color: #5a2a2a; color: #ff8a8a; }
+.c-btn-danger:hover { border-color: #ff5555; color: #ff5555; background-color: rgba(255,85,85,0.08); }
+
+.c-section-hint {
+    font-size: 12px;
+    color: #666;
+    margin: -8px 0 14px;
+    line-height: 1.5;
+}
+
+/* ====== TABS ====== */
+.c-tabs {
+    display: flex;
+    background-color: #111;
+    border-bottom: 1px solid #222;
+    overflow-x: auto; scrollbar-width: none;
+}
+.c-tabs::-webkit-scrollbar { display: none; }
+
+.c-tab {
+    flex: 1; min-width: 120px;
+    background: none; border: none;
+    color: #666; font-size: 13px; font-weight: 600;
+    padding: 14px 10px; cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s; white-space: nowrap;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.c-tab.active { color: #d4af37; border-bottom-color: #d4af37; }
+.c-tab:hover:not(.active) { color: #aaa; }
+
+.c-tab-badge {
+    background-color: #ff4444; color: #fff;
+    font-size: 10px; font-weight: 800;
+    min-width: 18px; height: 18px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center; padding: 0 4px;
+}
+
+/* ====== TAB CONTENT ====== */
+.c-tab-content { display: none; padding: 16px 24px; }
+.c-tab-content.active { display: block; }
+
+.c-section-title {
+    font-size: 12px; font-weight: 700; color: #888;
+    letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 14px;
+}
+
+/* ====== GRID PEDIDOS ====== */
+.c-orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+/* ====== EMPTY ====== */
+.c-empty { grid-column: 1/-1; text-align: center; padding: 50px 20px; color: #444; }
+.c-empty-icon { font-size: 48px; margin-bottom: 12px; }
+.c-empty p    { font-size: 14px; }
+
+/* ====== TARJETA PEDIDO CAJA ====== */
+.c-order-card {
+    background-color: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    animation: slideIn 0.3s ease both;
+}
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.c-order-card.listo-card { border-color: rgba(76,175,80,0.4); }
+.c-order-card.facturado-card { border-color: #333; opacity: 0.7; }
+
+.c-card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid #2a2a2a;
+}
+.c-card-mesa { font-size: 20px; font-weight: 800; color: #d4af37; }
+.c-card-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.c-card-time { font-size: 11px; color: #555; }
+.c-card-origen { font-size: 10px; color: #666; }
+
+.c-card-items {
+    padding: 10px 16px; flex: 1;
+    display: flex; flex-direction: column; gap: 6px;
+}
+.c-card-item {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px;
+}
+.c-card-item-name { color: #ccc; }
+.c-card-item-price { color: #d4af37; font-weight: 700; font-size: 12px; }
+
+.c-card-total-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px;
+    border-top: 1px solid #2a2a2a;
+    background-color: #151515;
+}
+.c-card-total-label { font-size: 12px; color: #666; }
+.c-card-total-value { font-size: 18px; font-weight: 800; color: #d4af37; }
+
+.c-card-footer { padding: 10px 16px 14px; }
+
+.c-btn-facturar {
+    width: 100%;
+    background: linear-gradient(135deg, #d4af37, #f5d76e);
+    color: #111; border: none; border-radius: 8px;
+    padding: 12px 0; font-size: 14px; font-weight: 800;
+    cursor: pointer; transition: transform 0.15s ease;
+    letter-spacing: 0.3px;
+}
+.c-btn-facturar:hover { transform: translateY(-1px); }
+
+.c-facturado-badge {
+    width: 100%; text-align: center;
+    background-color: rgba(76,175,80,0.1);
+    border: 1px solid rgba(76,175,80,0.3);
+    border-radius: 8px; padding: 10px;
+    font-size: 13px; font-weight: 700; color: #4caf50;
+}
+.c-facturado-meta { font-size: 11px; color: #555; margin-top: 4px; }
+
+/* BADGE ESTADO */
+.c-estado-badge {
+    font-size: 10px; font-weight: 700; padding: 3px 8px;
+    border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase;
+}
+.badge-pendiente  { background: rgba(245,166,35,0.2); color:#f5a623; border:1px solid rgba(245,166,35,0.3); }
+.badge-preparando { background: rgba(33,150,243,0.2); color:#2196f3; border:1px solid rgba(33,150,243,0.3); }
+.badge-listo      { background: rgba(76,175,80,0.2);  color:#4caf50; border:1px solid rgba(76,175,80,0.3); }
+.badge-entregado  { background: rgba(100,100,100,0.1);color:#666;    border:1px solid #333; }
+
+/* ====== RESUMEN ====== */
+.c-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px; margin-bottom: 8px;
+}
+.c-summary-card {
+    background-color: #1a1a1a; border: 1px solid #2a2a2a;
+    border-radius: 12px; padding: 18px 16px; text-align: center;
+}
+.c-summary-num   { font-size: 24px; font-weight: 800; color: #d4af37; margin-bottom: 6px; }
+.c-summary-label { font-size: 12px; color: #666; }
+
+.c-ranking { display: flex; flex-direction: column; gap: 8px; }
+.c-ranking-item {
+    display: flex; align-items: center; gap: 12px;
+    background-color: #1a1a1a; border-radius: 8px; padding: 10px 14px;
+}
+.c-rank-pos   { font-size: 16px; font-weight: 800; color: #d4af37; width: 24px; }
+.c-rank-name  { flex: 1; font-size: 13px; color: #eee; }
+.c-rank-count { font-size: 12px; color: #888; }
+.c-rank-bar-wrap { width: 80px; height: 6px; background-color: #2a2a2a; border-radius: 3px; }
+.c-rank-bar { height: 100%; background-color: #d4af37; border-radius: 3px; transition: width 0.5s ease; }
+
+.c-mesa-table { display: flex; flex-direction: column; gap: 6px; }
+.c-mesa-row {
+    display: flex; justify-content: space-between; align-items: center;
+    background-color: #1a1a1a; border-radius: 8px; padding: 10px 14px;
+    font-size: 13px;
+}
+.c-mesa-row-label { color: #888; }
+.c-mesa-row-value { color: #d4af37; font-weight: 700; }
+
+/* ====== MODAL ====== */
+.c-modal-overlay {
+    display: none; position: fixed;
+    top:0; left:0; width:100vw; height:100vh;
+    background-color: rgba(0,0,0,0.85);
+    z-index: 9000;
+    align-items: center; justify-content: center;
+    overflow-y: auto; padding: 20px;
+}
+.c-modal-overlay.active { display: flex; }
+
+.c-modal {
+    background-color: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 16px;
+    width: 100%; max-width: 440px;
+    padding: 24px;
+    display: flex; flex-direction: column; gap: 16px;
+    max-height: 90vh; overflow-y: auto;
+}
+
+.c-modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+}
+.c-modal-header h2 { font-size: 18px; color: #fff; }
+.c-modal-close {
+    background: none; border: none; color: #888;
+    font-size: 20px; cursor: pointer; padding: 4px 8px;
+    transition: color 0.2s;
+}
+.c-modal-close:hover { color: #ff5555; }
+
+/* Factura items */
+.c-factura-items { display: flex; flex-direction: column; gap: 8px; }
+.c-factura-item {
+    display: flex; justify-content: space-between;
+    font-size: 13px; padding: 6px 0;
+    border-bottom: 1px solid #222;
+}
+.c-factura-item:last-child { border-bottom: none; }
+.c-factura-item-info { color: #ccc; }
+.c-factura-item-qty  { color: #888; font-size: 12px; margin-top: 2px; }
+.c-factura-item-price { color: #d4af37; font-weight: 700; }
+
+.c-factura-totals {
+    background-color: #111; border-radius: 8px; padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 8px;
+}
+.c-factura-row {
+    display: flex; justify-content: space-between;
+    font-size: 13px; color: #888;
+}
+.c-factura-row.total-row {
+    font-size: 18px; font-weight: 800;
+    color: #d4af37; border-top: 1px solid #2a2a2a; padding-top: 8px; margin-top: 4px;
+}
+
+/* Pago */
+.c-label { font-size: 11px; font-weight: 700; color: #888; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+
+.c-pago-section { display: flex; flex-direction: column; gap: 10px; }
+
+.c-pago-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.c-pago-btn {
+    flex: 1; min-width: 100px;
+    background-color: #2a2a2a; color: #888;
+    border: 1px solid #333; border-radius: 8px;
+    padding: 10px 8px; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.c-pago-btn.active, .c-pago-btn:hover {
+    background-color: #d4af37; color: #111; border-color: #d4af37;
+}
+
+.c-vuelta-section { display: flex; flex-direction: column; gap: 8px; }
+
+.c-input {
+    width: 100%; background-color: #111; border: 1px solid #333;
+    border-radius: 8px; padding: 12px 14px; color: #fff; font-size: 16px;
+    outline: none; transition: border-color 0.2s;
+}
+.c-input:focus { border-color: #d4af37; }
+.c-input::placeholder { color: #444; }
+
+.c-vuelta-result {
+    background-color: rgba(76,175,80,0.1);
+    border: 1px solid rgba(76,175,80,0.3);
+    border-radius: 8px; padding: 10px 14px;
+    font-size: 14px; color: #4caf50;
+}
+.c-vuelta-result strong { font-size: 18px; }
+
+/* ====== MODAL IMPRESIÓN ====== */
+.c-modal-print {
+    border-color: #333;
+    background-color: #fff;
+    color: #111;
+    max-width: 320px;
+    font-family: 'Courier New', monospace;
+}
+.c-print-header { text-align: center; padding-bottom: 12px; border-bottom: 2px dashed #ccc; margin-bottom: 12px; }
+.c-print-logo   { font-size: 22px; font-weight: 900; letter-spacing: 2px; }
+.c-print-sub    { font-size: 11px; color: #666; margin-top: 4px; }
+.c-print-date   { font-size: 11px; color: #888; margin-top: 4px; }
+.c-print-mesa   { font-size: 16px; font-weight: 800; text-align: center; margin-bottom: 12px; color: #111; }
+.c-print-items  { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.c-print-item   { display: flex; justify-content: space-between; font-size: 12px; color: #333; }
+.c-print-divider { border-top: 2px dashed #ccc; margin: 10px 0; }
+.c-print-totals { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.c-print-total-row { display: flex; justify-content: space-between; font-size: 13px; color: #333; }
+.c-print-total-row.final { font-size: 16px; font-weight: 900; color: #111; border-top: 1px solid #ccc; padding-top: 6px; margin-top: 4px; }
+.c-print-metodo { text-align: center; font-size: 12px; color: #666; margin-bottom: 10px; }
+.c-print-footer { text-align: center; font-size: 11px; color: #888; border-top: 1px dashed #ccc; padding-top: 10px; line-height: 1.6; }
+.c-print-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+
+/* ====== BOTONES ====== */
+.c-btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, #d4af37, #f5d76e);
+    color: #111; border: none; border-radius: 10px;
+    padding: 15px 0; font-size: 16px; font-weight: 800;
+    cursor: pointer; letter-spacing: 0.5px;
+    box-shadow: 0 4px 14px rgba(212,175,55,0.35);
+    transition: transform 0.15s ease;
+}
+.c-btn-primary:hover { transform: translateY(-2px); }
+
+.c-btn-secondary {
+    width: 100%; background: transparent;
+    color: #d4af37; border: 2px solid #d4af37;
+    border-radius: 10px; padding: 13px 0;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    transition: background-color 0.15s;
+}
+.c-btn-secondary:hover { background-color: rgba(212,175,55,0.1); }
+
+/* ====== PRINT MEDIA ====== */
+@media print {
+    body > *:not(.c-modal-overlay) { display: none; }
+    .c-modal-overlay { display: block !important; position: static; background: none; padding: 0; }
+    .c-modal { box-shadow: none; border: none; max-height: none; }
+    .c-print-actions { display: none; }
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 600px) {
+    .c-header { padding: 12px 16px; }
+    .c-tab-content { padding: 12px 16px; }
+    .c-orders-grid { grid-template-columns: 1fr; }
+    .c-quick-stats { gap: 12px; }
+    .c-summary-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ====== TOAST ESTÁTICO (sin rebote) ====== */
+.c-toast {
+    transition: top 0.35s ease !important;
+}
+
+/* ====== ORIGEN DEL PEDIDO EN FACTURA ====== */
+.c-factura-origen {
+    font-size: 12px;
+    color: #888;
+    margin-top: 2px;
+}

@@ -1,0 +1,541 @@
+/* ============================================================
+   mesero.css — Panel del Mesero — MenuAR
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0d0d0d;
+    color: #ffffff;
+    min-height: 100vh;
+    padding-bottom: 32px;
+}
+
+/* ====== TOAST ====== */
+.m-toast {
+    position: fixed;
+    top: -70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #1a1a1a;
+    border: 1px solid #d4af37;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #d4af37;
+    z-index: 9999;
+    transition: top 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    white-space: nowrap;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+.m-toast.show { top: 80px; }
+
+/* ====== HEADER ====== */
+.m-header {
+    background-color: #000;
+    border-bottom: 2px solid #d4af37;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.m-brand-title { font-size: 20px; font-weight: 800; letter-spacing: 1px; }
+.m-brand-title span { color: #d4af37; }
+.m-brand-sub { font-size: 10px; color: #888; letter-spacing: 2px; margin-top: 2px; }
+
+.m-header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.m-time { font-size: 11px; color: #555; }
+
+.live-dot {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: #4caf50; font-weight: 600;
+}
+.live-dot::before {
+    content: ''; width: 8px; height: 8px; border-radius: 50%;
+    background-color: #4caf50;
+    animation: livePulse 1.5s ease-in-out infinite;
+}
+.live-dot.connecting { color: #f5a623; }
+.live-dot.connecting::before { background-color: #f5a623; }
+@keyframes livePulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.m-btn-icon {
+    background: transparent; border: 1px solid #333;
+    color: #666; width: 32px; height: 32px; border-radius: 6px;
+    font-size: 16px; cursor: pointer; display: flex;
+    align-items: center; justify-content: center; transition: all 0.2s;
+}
+.m-btn-icon:hover { border-color: #d4af37; color: #d4af37; }
+.m-btn-icon.muted { opacity: 0.4; }
+
+/* ====== TABS ====== */
+.m-tabs {
+    display: flex;
+    background-color: #111;
+    border-bottom: 1px solid #222;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.m-tabs::-webkit-scrollbar { display: none; }
+
+.m-tab {
+    flex: 1;
+    min-width: 100px;
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 14px 10px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+    white-space: nowrap;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.m-tab.active { color: #d4af37; border-bottom-color: #d4af37; }
+.m-tab:hover:not(.active) { color: #aaa; }
+
+.m-tab-badge {
+    background-color: #ff4444;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 4px;
+}
+
+/* ====== TAB CONTENT ====== */
+.m-tab-content { display: none; padding: 16px 20px; }
+.m-tab-content.active { display: block; }
+
+.m-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #888;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+.m-section-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.m-section-title-row .m-section-title { margin-bottom: 0; }
+
+.m-btn-clear-mini {
+    background: transparent;
+    border: 1px solid #444;
+    color: #888;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+.m-btn-clear-mini:hover { border-color: #ff5555; color: #ff5555; }
+
+.m-entregar-hint {
+    font-size: 12px;
+    color: #666;
+    margin: -6px 0 14px;
+    line-height: 1.5;
+}
+
+/* ====== CARDS LIST ====== */
+.m-cards-list { display: flex; flex-direction: column; gap: 12px; }
+
+.m-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #444;
+}
+.m-empty-icon { font-size: 48px; margin-bottom: 12px; }
+.m-empty p    { font-size: 14px; }
+
+/* ====== TARJETA LLAMADA ====== */
+.m-call-card {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    animation: slideIn 0.3s ease both;
+}
+.m-call-card.urgente { border-color: #ff5555; }
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.m-call-icon { font-size: 32px; flex-shrink: 0; }
+
+.m-call-info { flex: 1; }
+.m-call-mesa { font-size: 18px; font-weight: 800; color: #d4af37; }
+.m-call-motivo { font-size: 13px; color: #ccc; margin-top: 2px; }
+.m-call-time { font-size: 11px; color: #555; margin-top: 4px; }
+
+.m-call-actions { display: flex; flex-direction: column; gap: 6px; }
+
+.m-btn-atender {
+    background-color: #d4af37;
+    color: #111;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.m-btn-atender:hover { background-color: #f5d76e; }
+
+.m-btn-dismiss {
+    background: transparent;
+    color: #555;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.m-btn-dismiss:hover { border-color: #ff5555; color: #ff5555; }
+
+/* ====== TARJETA "PARA ENTREGAR" ====== */
+.m-ready-card {
+    background-color: #1a1a1a;
+    border: 1px solid rgba(76,175,80,0.4);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.m-ready-card.recordatorio { border-color: #f5a623; }
+.m-ready-icon { font-size: 32px; flex-shrink: 0; }
+.m-ready-info { flex: 1; }
+.m-ready-mesa { font-size: 18px; font-weight: 800; color: #4caf50; }
+.m-ready-items { font-size: 12px; color: #aaa; margin-top: 2px; line-height: 1.5; }
+.m-ready-time { font-size: 11px; color: #555; margin-top: 4px; }
+.m-btn-entregado {
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+.m-btn-entregado:hover { background-color: #5fce62; }
+
+/* ====== MODAL RECORDATORIO "LISTO PARA ENTREGAR" ====== */
+.m-modal-ready { border-color: #4caf50; max-width: 380px; }
+.m-ready-modal-list { display: flex; flex-direction: column; gap: 10px; width: 100%; text-align: left; }
+.m-ready-modal-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    background-color: #111; border-radius: 8px; padding: 10px 12px;
+}
+.m-ready-modal-item-info { font-size: 13px; color: #eee; }
+.m-ready-modal-item-info small { display: block; color: #666; font-size: 11px; margin-top: 2px; }
+
+/* ====== SELECTOR DE MESA ====== */
+.m-label { font-size: 12px; font-weight: 700; color: #888; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+
+.m-mesa-selector { margin-bottom: 20px; }
+
+.m-mesa-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+}
+
+.m-mesa-btn {
+    aspect-ratio: 1;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    color: #888;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+}
+.m-mesa-btn:hover   { border-color: #d4af37; color: #d4af37; }
+.m-mesa-btn.selected {
+    background-color: #d4af37;
+    border-color: #d4af37;
+    color: #111;
+}
+
+/* ====== MENÚ PARA MESERO ====== */
+.m-menu-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+
+.m-menu-item {
+    background-color: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 0.2s;
+}
+.m-menu-item.selected { border-color: #d4af37; background-color: #1f1e12; }
+
+.m-menu-item-img {
+    width: 52px; height: 52px;
+    border-radius: 8px;
+    object-fit: cover;
+    background-color: #2a2a2a;
+    flex-shrink: 0;
+}
+
+.m-menu-item-info { flex: 1; }
+.m-menu-item-name  { font-size: 14px; font-weight: 600; color: #eee; }
+.m-menu-item-price { font-size: 13px; color: #d4af37; font-weight: 700; margin-top: 2px; }
+
+.m-qty-control {
+    display: flex; align-items: center; gap: 8px;
+}
+.m-qty-btn {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    color: #fff;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+}
+.m-qty-btn:hover { background-color: #d4af37; border-color: #d4af37; color: #111; }
+.m-qty-num { font-size: 15px; font-weight: 700; min-width: 20px; text-align: center; color: #d4af37; }
+
+/* ====== CARRITO MESERO ====== */
+.m-cart-section {
+    background-color: #111;
+    border: 1px solid #d4af37;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 8px;
+}
+
+.m-cart-items { display: flex; flex-direction: column; gap: 8px; margin: 10px 0 14px; }
+
+.m-cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 1px solid #222;
+}
+.m-cart-item:last-child { border-bottom: none; }
+.m-cart-item-name { color: #eee; }
+.m-cart-item-right { display: flex; align-items: center; gap: 10px; }
+.m-cart-item-qty { color: #888; font-size: 12px; }
+.m-cart-item-price { color: #d4af37; font-weight: 700; }
+
+.m-cart-total-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0 16px;
+    border-top: 1px solid #2a2a2a;
+    font-size: 14px; color: #888;
+}
+.m-cart-total { font-size: 22px; font-weight: 800; color: #d4af37; }
+
+/* ====== TARJETA MIS ÓRDENES ====== */
+.m-order-card {
+    background-color: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 14px 16px;
+    animation: slideIn 0.3s ease both;
+}
+.m-order-card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+}
+.m-order-mesa  { font-size: 18px; font-weight: 800; color: #d4af37; }
+.m-order-time  { font-size: 11px; color: #555; }
+.m-order-items { font-size: 13px; color: #ccc; display: flex; flex-direction: column; gap: 4px; }
+.m-order-total { margin-top: 10px; font-size: 14px; font-weight: 700; color: #d4af37; text-align: right; }
+
+.estado-chip {
+    font-size: 10px; font-weight: 700; padding: 3px 8px;
+    border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase;
+}
+.chip-pendiente  { background: rgba(245,166,35,0.15); color:#f5a623; border:1px solid rgba(245,166,35,0.3); }
+.chip-preparando { background: rgba(33,150,243,0.15); color:#2196f3; border:1px solid rgba(33,150,243,0.3); }
+.chip-listo      { background: rgba(76,175,80,0.15);  color:#4caf50; border:1px solid rgba(76,175,80,0.3); }
+.chip-entregado  { background: rgba(100,100,100,0.15);color:#666;    border:1px solid #333; }
+
+/* ====== BOTONES GENERALES ====== */
+.m-btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, #d4af37, #f5d76e);
+    color: #111;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 0;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 14px rgba(212,175,55,0.35);
+    transition: transform 0.15s ease;
+    margin-top: 8px;
+}
+.m-btn-primary:hover { transform: translateY(-2px); }
+
+.m-btn-secondary {
+    width: 100%;
+    background: transparent;
+    color: #d4af37;
+    border: 2px solid #d4af37;
+    border-radius: 10px;
+    padding: 13px 0;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background-color 0.15s;
+}
+.m-btn-secondary:hover { background-color: rgba(212,175,55,0.1); }
+
+/* ====== MODAL ÉXITO ====== */
+.m-modal-overlay {
+    display: none;
+    position: fixed; top:0; left:0; width:100vw; height:100vh;
+    background-color: rgba(0,0,0,0.85);
+    z-index: 9000;
+    align-items: center; justify-content: center;
+}
+.m-modal-overlay.active { display: flex; }
+
+.m-modal {
+    background-color: #1a1a1a;
+    border: 1px solid #d4af37;
+    border-radius: 16px;
+    padding: 32px 24px;
+    max-width: 340px;
+    width: 90%;
+    text-align: center;
+    display: flex; flex-direction: column; gap: 12px;
+}
+
+.m-success-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background-color: #d4af37;
+    color: #111;
+    font-size: 32px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto;
+}
+.m-modal h3 { font-size: 20px; color: #fff; }
+.m-modal p  { font-size: 13px; color: #aaa; }
+
+.m-success-detail {
+    background-color: #111;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: left;
+    font-size: 13px;
+    color: #ccc;
+    display: flex; flex-direction: column; gap: 4px;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 480px) {
+    .m-mesa-grid { grid-template-columns: repeat(4, 1fr); }
+    .m-tab { font-size: 12px; padding: 12px 8px; }
+}
+
+/* ====== PANTALLA DE LOGIN ====== */
+.login-screen {
+    position: fixed; top:0; left:0; width:100vw; height:100vh;
+    background-color: #0d0d0d;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 99999; padding: 24px;
+}
+.login-card {
+    background-color: #1a1a1a;
+    border: 1px solid #d4af37;
+    border-radius: 20px;
+    padding: 36px 28px;
+    max-width: 360px; width: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 12px;
+    text-align: center;
+}
+.login-logo { font-size: 26px; font-weight: 900; letter-spacing: 1px; color: #fff; }
+.login-logo span { color: #d4af37; }
+.login-sub  { font-size: 10px; color: #888; letter-spacing: 2px; margin-top: -6px; }
+.login-icon { font-size: 52px; margin: 4px 0; }
+.login-title { font-size: 20px; font-weight: 700; color: #fff; margin: 0; }
+.login-desc  { font-size: 13px; color: #888; line-height: 1.5; margin: 0; }
+.login-input {
+    width: 100%; background-color: #111; border: 1px solid #333;
+    border-radius: 10px; padding: 14px 16px; color: #fff; font-size: 16px;
+    outline: none; transition: border-color 0.2s; text-align: center;
+}
+.login-input:focus { border-color: #d4af37; }
+.login-error { color: #ff5555; font-size: 12px; display: none; }
+.login-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #d4af37, #f5d76e);
+    color: #111; border: none; border-radius: 10px;
+    padding: 15px 0; font-size: 16px; font-weight: 800;
+    cursor: pointer; letter-spacing: 0.5px;
+    box-shadow: 0 4px 14px rgba(212,175,55,0.35);
+    transition: transform 0.15s ease;
+}
+.login-btn:hover { transform: translateY(-2px); }
+
+/* ====== CHIP NOMBRE MESERO EN HEADER ====== */
+.m-mesero-chip {
+    background-color: rgba(212,175,55,0.15);
+    border: 1px solid rgba(212,175,55,0.4);
+    color: #d4af37;
+    font-size: 12px; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px;
+    letter-spacing: 0.3px;
+}
+
+/* ====== TOAST ESTÁTICO (sin rebote) ====== */
+.m-toast {
+    transition: top 0.35s ease !important; /* sobreescribe el cubic-bezier del base */
+}

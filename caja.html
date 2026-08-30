@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MenuAR — Caja</title>
+    <link rel="stylesheet" href="caja.css">
+</head>
+<body>
+
+    <div class="c-toast" id="cToast"><span id="cToastMsg"></span></div>
+
+    <!-- HEADER -->
+    <header class="c-header">
+        <div class="c-brand">
+            <div class="c-brand-title">Menu<span>AR</span></div>
+            <div class="c-brand-sub">PANEL DE CAJA</div>
+        </div>
+        <div class="c-header-right">
+            <div class="live-dot connecting" id="liveStatus">Conectando...</div>
+            <div class="c-quick-stats">
+                <div class="c-qs-item">
+                    <span class="c-qs-num" id="qsPendientes">0</span>
+                    <span class="c-qs-label">Por facturar</span>
+                </div>
+                <div class="c-qs-item">
+                    <span class="c-qs-num gold" id="qsTotal">$0</span>
+                    <span class="c-qs-label">Total hoy</span>
+                </div>
+            </div>
+            <div class="c-header-actions">
+                <button class="c-btn-icon" id="soundBtn" title="Silenciar">🔔</button>
+                <button class="c-btn-outline c-btn-danger" id="limpiarDiaBtn" title="Limpiar todos los datos del día">🗑️ Limpiar día</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- TABS -->
+    <div class="c-tabs">
+        <button class="c-tab active" data-tab="tab-activos">
+            ⏳ Por facturar
+            <span class="c-tab-badge" id="badgeActivos" style="display:none">0</span>
+        </button>
+        <button class="c-tab" data-tab="tab-facturados">✅ Facturados</button>
+        <button class="c-tab" data-tab="tab-resumen">📊 Resumen del día</button>
+    </div>
+
+    <!-- TAB POR FACTURAR -->
+    <div class="c-tab-content active" id="tab-activos">
+        <div class="c-section-title">Pedidos pendientes de pago</div>
+        <p class="c-section-hint">Los pedidos "¡Listo!" aparecen aquí de nuevo apenas el mesero los marque como entregados en su mesa.</p>
+        <div class="c-orders-grid" id="activosGrid">
+            <div class="c-empty"><div class="c-empty-icon">💳</div><p>Sin pedidos por facturar</p></div>
+        </div>
+    </div>
+
+    <!-- TAB FACTURADOS -->
+    <div class="c-tab-content" id="tab-facturados">
+        <div class="c-section-title">Pedidos ya pagados hoy</div>
+        <div class="c-orders-grid" id="facturadosGrid">
+            <div class="c-empty"><div class="c-empty-icon">✅</div><p>Aún no hay pedidos facturados</p></div>
+        </div>
+    </div>
+
+    <!-- TAB RESUMEN -->
+    <div class="c-tab-content" id="tab-resumen">
+        <div class="c-section-title">Resumen del día</div>
+        <div class="c-summary-grid">
+            <div class="c-summary-card"><div class="c-summary-num" id="sumTotal">$0</div><div class="c-summary-label">💰 Ventas totales</div></div>
+            <div class="c-summary-card"><div class="c-summary-num" id="sumPedidos">0</div><div class="c-summary-label">📦 Pedidos totales</div></div>
+            <div class="c-summary-card"><div class="c-summary-num" id="sumPromedio">$0</div><div class="c-summary-label">📈 Ticket promedio</div></div>
+            <div class="c-summary-card"><div class="c-summary-num" id="sumMesaTop">—</div><div class="c-summary-label">🏆 Mesa más activa</div></div>
+        </div>
+        <div class="c-section-title" style="margin-top:24px">Platos más pedidos</div>
+        <div class="c-ranking" id="rankingPlatos"><div class="c-empty"><p>Aún sin datos</p></div></div>
+        <div class="c-section-title" style="margin-top:24px">Ventas por mesa</div>
+        <div class="c-mesa-table" id="mesaTable"><div class="c-empty"><p>Aún sin datos</p></div></div>
+    </div>
+
+    <!-- MODAL FACTURACIÓN -->
+    <div class="c-modal-overlay" id="facturaModal">
+        <div class="c-modal">
+            <div class="c-modal-header">
+                <div>
+                    <h2 id="facturaTitle">Factura</h2>
+                    <div class="c-factura-origen" id="facturaOrigen"></div>
+                </div>
+                <button class="c-modal-close" id="closeFacturaBtn">✕</button>
+            </div>
+
+            <div class="c-factura-items" id="facturaItems"></div>
+
+            <div class="c-factura-totals">
+                <div class="c-factura-row"><span>Subtotal</span><span id="fSubtotal"></span></div>
+                <div class="c-factura-row"><span>IVA (19%)</span><span id="fIva"></span></div>
+                <div class="c-factura-row total-row"><span>TOTAL</span><span id="fTotal"></span></div>
+            </div>
+
+            <div class="c-pago-section">
+                <div class="c-label">Método de pago</div>
+                <div class="c-pago-btns">
+                    <button class="c-pago-btn active" data-metodo="Efectivo">💵 Efectivo</button>
+                    <button class="c-pago-btn" data-metodo="Tarjeta">💳 Tarjeta</button>
+                    <button class="c-pago-btn" data-metodo="Transferencia">📱 Transferencia</button>
+                </div>
+                <div id="vueltaSection" class="c-vuelta-section">
+                    <div class="c-label">Con cuánto paga el cliente</div>
+                    <input type="number" id="pagoInput" class="c-input" placeholder="ej: 100000">
+                    <div class="c-vuelta-result" id="vueltaResult" style="display:none">
+                        Vuelto: <strong id="vueltaNum"></strong>
+                    </div>
+                </div>
+            </div>
+
+            <button class="c-btn-primary" id="confirmarPagoBtn">Confirmar pago</button>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRMAR LIMPIEZA DEL DÍA -->
+    <div class="c-modal-overlay" id="limpiarDiaModal">
+        <div class="c-modal">
+            <div class="c-modal-header">
+                <h2>⚠️ Limpiar todos los datos del día</h2>
+                <button class="c-modal-close" id="closeLimpiarDiaBtn">✕</button>
+            </div>
+            <p style="color:#ccc;font-size:14px;line-height:1.5">
+                Esto borrará <strong>todos</strong> los pedidos y llamadas registrados hoy (facturados y por facturar) en este sistema.
+                Esta acción <strong>no se puede deshacer</strong>. Úsalo solo al cerrar el día.
+            </p>
+            <button class="c-btn-primary" id="confirmarLimpiarDiaBtn" style="background:linear-gradient(135deg,#ff5555,#ff8a8a);box-shadow:0 4px 14px rgba(255,85,85,0.35)">Sí, borrar todo</button>
+            <button class="c-btn-secondary" id="cancelarLimpiarDiaBtn">Cancelar</button>
+        </div>
+    </div>
+
+    <script src="caja.js"></script>
+</body>
+</html>

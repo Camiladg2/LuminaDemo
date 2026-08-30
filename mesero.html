@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MenuAR — Mesero</title>
+    <link rel="stylesheet" href="mesero.css">
+</head>
+<body>
+
+    <!-- ===== PANTALLA DE IDENTIFICACIÓN ===== -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <div class="login-logo">Menu<span>AR</span></div>
+            <div class="login-sub">PANEL DEL MESERO</div>
+            <div class="login-icon">👤</div>
+            <h2 class="login-title">¿Quién eres?</h2>
+            <p class="login-desc">Escribe tu nombre para identificar tus acciones en el sistema</p>
+            <input type="text" id="nombreInput" class="login-input" placeholder="Tu nombre (ej: Carlos)" maxlength="30" autocomplete="off">
+            <div class="login-error" id="loginError">Por favor escribe tu nombre</div>
+            <button class="login-btn" id="loginBtn">Entrar al panel</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="m-toast" id="mToast"><span id="mToastMsg"></span></div>
+
+    <!-- HEADER -->
+    <header class="m-header">
+        <div class="m-brand">
+            <div class="m-brand-title">Menu<span>AR</span></div>
+            <div class="m-brand-sub">PANEL DEL MESERO</div>
+        </div>
+        <div class="m-header-right">
+            <div class="live-dot connecting" id="liveStatus">Conectando...</div>
+            <div class="m-mesero-chip" id="meseroNombreDisplay">—</div>
+            <div class="m-time" id="mTime">—</div>
+            <button class="m-btn-icon" id="soundBtn" title="Silenciar">🔔</button>
+            <button class="m-btn-icon" id="cambiarPerfilBtn" title="Cambiar de mesero">🔄</button>
+        </div>
+    </header>
+
+    <!-- TABS -->
+    <div class="m-tabs">
+        <button class="m-tab active" data-tab="tab-llamadas">
+            🛎️ Llamadas
+            <span class="m-tab-badge" id="badgeLlamadas" style="display:none">0</span>
+        </button>
+        <button class="m-tab" data-tab="tab-entregar">
+            🍽️ Para entregar
+            <span class="m-tab-badge" id="badgeEntregar" style="display:none">0</span>
+        </button>
+        <button class="m-tab" data-tab="tab-tomar">📋 Tomar Orden</button>
+        <button class="m-tab" data-tab="tab-pedidos">📦 Mis Pedidos</button>
+    </div>
+
+    <!-- TAB LLAMADAS -->
+    <div class="m-tab-content active" id="tab-llamadas">
+        <div class="m-section-title">Llamadas activas de mesas</div>
+        <div class="m-cards-list" id="llamadasList">
+            <div class="m-empty"><div class="m-empty-icon">🛎️</div><p>Sin llamadas pendientes</p></div>
+        </div>
+    </div>
+
+    <!-- TAB PARA ENTREGAR -->
+    <div class="m-tab-content" id="tab-entregar">
+        <div class="m-section-title">Pedidos listos para recoger y entregar</div>
+        <p class="m-entregar-hint">Estos pedidos se quedan aquí hasta que alguien los marque como entregados. Así todos los meseros saben si ya se llevaron o no.</p>
+        <div class="m-cards-list" id="entregarList">
+            <div class="m-empty"><div class="m-empty-icon">🍽️</div><p>No hay pedidos listos por entregar</p></div>
+        </div>
+    </div>
+
+    <!-- TAB TOMAR ORDEN -->
+    <div class="m-tab-content" id="tab-tomar">
+        <div class="m-section-title">Tomar orden en mesa</div>
+        <div class="m-mesa-selector">
+            <label class="m-label">Mesa</label>
+            <div class="m-mesa-grid" id="mesaGrid"></div>
+        </div>
+        <div class="m-label" style="margin:16px 0 8px">Selecciona los platos</div>
+        <div class="m-menu-list" id="meseroMenuList"></div>
+        <div class="m-cart-section" id="meseroCartSection" style="display:none">
+            <div class="m-label">Resumen del pedido</div>
+            <div class="m-cart-items" id="meseroCartItems"></div>
+            <div class="m-cart-total-row">
+                <span>Total</span>
+                <span class="m-cart-total" id="meseroCartTotal">$0</span>
+            </div>
+            <button class="m-btn-primary" id="meseroConfirmBtn">Enviar a cocina y caja</button>
+            <button class="m-btn-secondary" id="meseroClearBtn">Limpiar selección</button>
+        </div>
+    </div>
+
+    <!-- TAB MIS PEDIDOS -->
+    <div class="m-tab-content" id="tab-pedidos">
+        <div class="m-section-title-row">
+            <div class="m-section-title">Pedidos tomados por ti hoy</div>
+            <button class="m-btn-clear-mini" id="limpiarMisPedidosBtn">🧹 Limpiar mi lista</button>
+        </div>
+        <div class="m-cards-list" id="misOrdenesList">
+            <div class="m-empty"><div class="m-empty-icon">📋</div><p>Aún no has tomado órdenes hoy</p></div>
+        </div>
+    </div>
+
+    <!-- MODAL ÉXITO -->
+    <div class="m-modal-overlay" id="mSuccessModal">
+        <div class="m-modal">
+            <div class="m-success-icon">✓</div>
+            <h3>¡Orden enviada!</h3>
+            <p>La orden fue enviada a cocina y registrada en caja.</p>
+            <div class="m-success-detail" id="mSuccessDetail"></div>
+            <button class="m-btn-primary" id="mSuccessClose">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRMACIÓN GENÉRICA -->
+    <div class="m-modal-overlay" id="confirmModal">
+        <div class="m-modal">
+            <h3 id="confirmModalTitle">¿Confirmar?</h3>
+            <p id="confirmModalMsg"></p>
+            <button class="m-btn-primary" id="confirmModalOk">Sí, continuar</button>
+            <button class="m-btn-secondary" id="confirmModalCancel">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- MODAL RECORDATORIO: PEDIDOS LISTOS SIN ENTREGAR -->
+    <div class="m-modal-overlay" id="readyModal">
+        <div class="m-modal m-modal-ready">
+            <div class="m-success-icon">🍽️</div>
+            <h3>¡Pedido(s) listo(s) para entregar!</h3>
+            <p>No se cierra hasta que marques cada uno como entregado.</p>
+            <div class="m-ready-modal-list" id="readyModalList"></div>
+            <button class="m-btn-secondary" id="readyModalDismiss">👁️ Ya lo vi, recordarme luego</button>
+        </div>
+    </div>
+
+    <script src="mesero.js"></script>
+</body>
+</html>

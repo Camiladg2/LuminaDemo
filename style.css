@@ -334,6 +334,46 @@ html, body {
 .dish-title { color: #ffffff; margin: 0 0 4px 0; font-size: 22px; }
 .dish-price { color: #d4af37; font-size: 18px; font-weight: 700; margin: 0 0 16px 0; }
 
+/* ================= SELECTOR DE CANTIDAD ================= */
+.qty-picker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #1f1f1f;
+    border: 1px solid #333333;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+}
+.qty-picker-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #888888;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.qty-control { display: flex; align-items: center; gap: 12px; }
+.qty-btn {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background-color: #2a2a2a;
+    border: 1px solid #444444;
+    color: #ffffff;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+}
+.qty-btn:hover { background-color: #d4af37; border-color: #d4af37; color: #111111; }
+.qty-num { font-size: 16px; font-weight: 800; min-width: 22px; text-align: center; color: #d4af37; }
+
+/* Contador de cantidad dentro de cada item del carrito */
+.cart-item-qty-control { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.cart-item-qty-control .qty-btn { width: 24px; height: 24px; font-size: 15px; }
+.cart-item-qty-control .qty-num { font-size: 13px; min-width: 16px; }
+
 .modal-actions {
     margin-top: auto;
     display: flex;
@@ -711,4 +751,78 @@ html, body {
     padding: 2px 6px;
     border-radius: 4px;
     letter-spacing: 1px;
+}
+/* ================= BOTÓN MESERO FAB ================= */
+.waiter-fab {
+    position: fixed;
+    bottom: 96px; /* encima del cart-fab */
+    right: calc(50% - 300px + 20px);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 2px solid #d4af37;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.waiter-fab:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(212,175,55,0.4); }
+.waiter-fab:active { transform: scale(0.96); }
+
+@media (max-width: 640px) {
+    .waiter-fab { right: 20px; }
+}
+
+/* ================= MODAL MESERO ================= */
+.waiter-modal-content {
+    justify-content: flex-start;
+    gap: 0;
+}
+
+.waiter-modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0 20px;
+}
+
+.waiter-icon-big { font-size: 56px; line-height: 1; }
+.waiter-title    { color: #ffffff; font-size: 22px; font-weight: 700; text-align: center; margin: 0; }
+.waiter-sub      { color: #888; font-size: 13px; text-align: center; margin: 0; }
+
+.waiter-reasons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.waiter-reason-btn {
+    width: 100%;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.waiter-reason-btn:hover {
+    background-color: #d4af37;
+    color: #111;
+    border-color: #d4af37;
+    transform: translateX(4px);
 }

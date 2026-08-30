@@ -24,6 +24,42 @@
         <span class="cart-fab-badge" id="cartFabBadge" style="display:none">0</span>
     </button>
 
+    <!-- ============ BOTÓN FLOTANTE MESERO ============ -->
+    <button class="waiter-fab" id="waiterFab" aria-label="Llamar al mesero">
+        🔔
+    </button>
+
+    <!-- ============ MODAL LLAMAR MESERO ============ -->
+    <div class="modal-overlay" id="waiterModal">
+        <div class="modal-content waiter-modal-content">
+            <button class="back-btn" id="closeWaiterBtn">Volver al menú</button>
+            <div class="waiter-modal-body">
+                <div class="waiter-icon-big">🛎️</div>
+                <h2 class="waiter-title">¿En qué te podemos ayudar?</h2>
+                <p class="waiter-sub">Elige el motivo y tu mesero llegará en un momento</p>
+                <div class="waiter-reasons">
+                    <button class="waiter-reason-btn" data-reason="Tengo una pregunta sobre el menú">📋 Pregunta sobre el menú</button>
+                    <button class="waiter-reason-btn" data-reason="Necesito ayuda para hacer mi pedido">🤔 Ayuda para pedir</button>
+                    <button class="waiter-reason-btn" data-reason="Necesito la cuenta">💳 Quiero la cuenta</button>
+                    <button class="waiter-reason-btn" data-reason="Tengo un problema con mi pedido">⚠️ Problema con mi pedido</button>
+                    <button class="waiter-reason-btn" data-reason="Necesito cubiertos o servilletas">🍴 Cubiertos / servilletas</button>
+                    <button class="waiter-reason-btn" data-reason="Otro motivo">💬 Otro motivo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ MODAL CONFIRMACIÓN MESERO ============ -->
+    <div class="modal-overlay" id="waiterConfirmModal">
+        <div class="modal-content success-content">
+            <div class="success-icon animate__animated animate__bounceIn">🛎️</div>
+            <h3 class="success-title animate__animated animate__fadeInUp">¡Mesero en camino!</h3>
+            <p class="animate__animated animate__fadeInUp" style="animation-delay:0.1s">Tu mesero fue notificado y llegará en un momento a la <strong id="waiterConfirmMesa"></strong>.</p>
+            <p style="color:#d4af37; font-size:13px; margin-top:8px;" id="waiterConfirmReason"></p>
+            <button class="order-btn" id="waiterConfirmClose" style="margin-top:24px">Cerrar</button>
+        </div>
+    </div>
+
     <div class="phone-frame">
 
         <!-- NAV -->
@@ -587,6 +623,14 @@
                     <div class="hotspot-card" id="info-vegetales"><h4>Vegetales Frescos</h4><p>Lechuga crocante, tomate y cebolla morada cortados a diario.</p></div>
                     <div class="hotspot-card" id="info-salsa"><h4>Salsa de la Casa</h4><p>Receta secreta, ahumada y con un toque picante.</p></div>
                 </div>
+                <div class="qty-picker">
+                    <span class="qty-picker-label">Cantidad</span>
+                    <div class="qty-control">
+                        <button class="qty-btn" id="hotspotQtyMinus" type="button">−</button>
+                        <span class="qty-num" id="hotspotQtyNum">1</span>
+                        <button class="qty-btn" id="hotspotQtyPlus" type="button">+</button>
+                    </div>
+                </div>
                 <button class="order-btn-flat" id="orderFromHotspot">¡Lo quiero!</button>
             </div>
         </section>
@@ -625,6 +669,15 @@
 
             <h2 class="dish-title animate__animated animate__fadeInUp"></h2>
             <p class="dish-price animate__animated animate__fadeInUp" style="animation-delay:0.1s"></p>
+
+            <div class="qty-picker">
+                <span class="qty-picker-label">Cantidad</span>
+                <div class="qty-control">
+                    <button class="qty-btn" id="modalQtyMinus" type="button">−</button>
+                    <span class="qty-num" id="modalQtyNum">1</span>
+                    <button class="qty-btn" id="modalQtyPlus" type="button">+</button>
+                </div>
+            </div>
 
             <div class="modal-actions">
                 <button class="order-btn animate__animated animate__pulse animate__infinite animate__slow" id="orderFromModal">¡Lo quiero!</button>

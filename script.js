@@ -97,10 +97,14 @@ function mostrarSelectorDemo() {
 }
 
 // ============ CARRITO ============
-let cart = [];
+let cart = []; // cada item: { name, price, priceNum, poster, qty }
 
 function recalcTotal() {
-    return cart.reduce((sum, item) => sum + item.priceNum, 0);
+    return cart.reduce((sum, item) => sum + item.priceNum * item.qty, 0);
+}
+
+function totalItemsCount() {
+    return cart.reduce((sum, item) => sum + item.qty, 0);
 }
 
 function formatPrice(num) {
@@ -109,12 +113,36 @@ function formatPrice(num) {
 
 function updateFab() {
     const badge = document.getElementById("cartFabBadge");
-    if (cart.length > 0) {
-        badge.textContent = cart.length;
+    const total = totalItemsCount();
+    if (total > 0) {
+        badge.textContent = total;
         badge.style.display = "flex";
     } else {
         badge.style.display = "none";
     }
+}
+
+// Agrega un item al carrito respetando la cantidad seleccionada.
+// Si el plato ya está en el carrito, suma la cantidad en vez de duplicar la fila.
+function addToCart(item, qty) {
+    qty = Math.max(1, qty || 1);
+    const existente = cart.find(i => i.name === item.name);
+    if (existente) {
+        existente.qty += qty;
+    } else {
+        cart.push({ ...item, qty });
+    }
+}
+
+// Ajusta la cantidad de un item ya en el carrito (por índice). Si llega a 0, se elimina.
+function cambiarCantidadCarrito(index, delta) {
+    if (!cart[index]) return;
+    cart[index].qty += delta;
+    if (cart[index].qty <= 0) {
+        cart.splice(index, 1);
+    }
+    renderCart();
+    updateFab();
 }
 
 document.getElementById("cartFab").addEventListener("click", () => {
@@ -125,10 +153,10 @@ document.getElementById("cartFab").addEventListener("click", () => {
 // ============ TOAST ============
 let toastTimer = null;
 
-function showToast(item) {
+function showToast(item, qty) {
     const toast = document.getElementById("toast");
     document.getElementById("toastImg").src  = item.poster || "";
-    document.getElementById("toastName").textContent = item.name;
+    document.getElementById("toastName").textContent = qty > 1 ? `${item.name} x${qty}` : item.name;
     if (toastTimer) clearTimeout(toastTimer);
     toast.classList.add("show");
     toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
@@ -148,18 +176,21 @@ function renderCart() {
                      onerror="this.src='';this.style.background='#3a3a3a'">
                 <div class="cart-item-info">
                     <h4>${item.name}</h4>
-                    <p>${item.price}</p>
+                    <p>${item.price} c/u · ${formatPrice(item.priceNum * item.qty)}</p>
                 </div>
-                <button class="cart-remove-btn" data-index="${index}" title="Quitar">×</button>
+                <div class="cart-item-qty-control">
+                    <button class="qty-btn cart-qty-minus" data-index="${index}" type="button">−</button>
+                    <span class="qty-num">${item.qty}</span>
+                    <button class="qty-btn cart-qty-plus" data-index="${index}" type="button">+</button>
+                </div>
             </div>
         `).join("");
 
-        cartList.querySelectorAll(".cart-remove-btn").forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                cart.splice(parseInt(e.currentTarget.dataset.index), 1);
-                renderCart();
-                updateFab();
-            });
+        cartList.querySelectorAll(".cart-qty-minus").forEach(btn => {
+            btn.addEventListener("click", (e) => cambiarCantidadCarrito(parseInt(e.currentTarget.dataset.index), -1));
+        });
+        cartList.querySelectorAll(".cart-qty-plus").forEach(btn => {
+            btn.addEventListener("click", (e) => cambiarCantidadCarrito(parseInt(e.currentTarget.dataset.index), +1));
         });
     }
 
@@ -178,6 +209,7 @@ async function guardarPedido(items, total, mesa) {
         items:      items,
         total:      total,
         estado:     "pendiente",
+        origen:     "cliente",
         created_at: new Date().toISOString()
     };
 
@@ -250,6 +282,32 @@ const storyCard        = document.getElementById("storyCard");
 const dishStory        = storyCard.querySelector(".dish-story");
 
 let activeItem = null;
+let modalQty   = 1;
+let hotspotQty = 1;
+
+function renderModalQty() {
+    document.getElementById("modalQtyNum").textContent = modalQty;
+}
+document.getElementById("modalQtyMinus").addEventListener("click", () => {
+    modalQty = Math.max(1, modalQty - 1);
+    renderModalQty();
+});
+document.getElementById("modalQtyPlus").addEventListener("click", () => {
+    modalQty = Math.min(20, modalQty + 1);
+    renderModalQty();
+});
+
+function renderHotspotQty() {
+    document.getElementById("hotspotQtyNum").textContent = hotspotQty;
+}
+document.getElementById("hotspotQtyMinus").addEventListener("click", () => {
+    hotspotQty = Math.max(1, hotspotQty - 1);
+    renderHotspotQty();
+});
+document.getElementById("hotspotQtyPlus").addEventListener("click", () => {
+    hotspotQty = Math.min(20, hotspotQty + 1);
+    renderHotspotQty();
+});
 
 document.querySelectorAll(".open-3d").forEach(card => {
     card.addEventListener("click", () => {
@@ -266,6 +324,9 @@ document.querySelectorAll(".open-3d").forEach(card => {
         dishPrice.textContent  = card.dataset.price;
         dishStory.textContent  = card.dataset.story;
         storyCard.classList.remove("active");
+
+        modalQty = 1;
+        renderModalQty();
 
         const content = modal3D.querySelector(".modal-content");
         content.classList.remove("animate__slideInUp");
@@ -286,20 +347,24 @@ document.getElementById("arLaunchBtn").addEventListener("click", () => {
 // ============ ¡LO QUIERO! — modal 3D ============
 document.getElementById("orderFromModal").addEventListener("click", () => {
     if (!activeItem) return;
-    cart.push({ ...activeItem });
+    addToCart(activeItem, modalQty);
     modal3D.classList.remove("active");
     updateFab();
-    showToast(activeItem);
+    showToast(activeItem, modalQty);
     openCartModal();
+    modalQty = 1;
+    renderModalQty();
 });
 
 // ============ ¡LO QUIERO! — hotspot ============
 document.getElementById("orderFromHotspot").addEventListener("click", () => {
     const item = { name: "Hamburguesa Insignia", price: "$38.000", poster: "Images/burguer.png", priceNum: 38000 };
-    cart.push({ ...item });
+    addToCart(item, hotspotQty);
     updateFab();
-    showToast(item);
+    showToast(item, hotspotQty);
     openCartModal();
+    hotspotQty = 1;
+    renderHotspotQty();
 });
 
 // ============ MODAL CARRITO ============
@@ -318,15 +383,15 @@ document.getElementById("keepBrowsingBtn").addEventListener("click", () => {
 document.getElementById("confirmCartBtn").addEventListener("click", async () => {
     if (cart.length === 0) return;
 
-    const itemsParaGuardar = cart.map(i => ({ name: i.name, price: i.price, priceNum: i.priceNum, poster: i.poster }));
+    const itemsParaGuardar = cart.map(i => ({ name: i.name, price: i.price, priceNum: i.priceNum, poster: i.poster, qty: i.qty }));
     await guardarPedido(itemsParaGuardar, formatPrice(recalcTotal()), mesaActual);
 
     cartModal.classList.remove("active");
 
     document.getElementById("successItems").innerHTML = cart.map(item => `
         <div class="success-item animate__animated animate__fadeInUp">
-            <span>${item.name}</span>
-            <span>${item.price}</span>
+            <span>${item.name}${item.qty > 1 ? " x" + item.qty : ""}</span>
+            <span>${formatPrice(item.priceNum * item.qty)}</span>
         </div>
     `).join("");
 
@@ -357,6 +422,68 @@ document.getElementById("openHotspotBtn").addEventListener("click", () => {
     switchView("view-hotspot");
     playHotspotAnimation();
 });
+
+// ============ LLAMAR AL MESERO ============
+const waiterFab           = document.getElementById("waiterFab");
+const waiterModal         = document.getElementById("waiterModal");
+const waiterConfirmModal  = document.getElementById("waiterConfirmModal");
+
+waiterFab.addEventListener("click", () => {
+    // Solo si hay mesa seleccionada
+    if (!mesaActual) {
+        alert("Por favor selecciona tu mesa primero para llamar al mesero.");
+        return;
+    }
+    waiterModal.classList.add("active");
+});
+
+document.getElementById("closeWaiterBtn").addEventListener("click", () => {
+    waiterModal.classList.remove("active");
+});
+waiterModal.addEventListener("click", e => {
+    if (e.target === waiterModal) waiterModal.classList.remove("active");
+});
+
+document.querySelectorAll(".waiter-reason-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+        const reason = btn.dataset.reason;
+        await enviarLlamadaMesero(reason);
+        waiterModal.classList.remove("active");
+
+        document.getElementById("waiterConfirmMesa").textContent = `Mesa ${mesaActual}`;
+        document.getElementById("waiterConfirmReason").textContent = `Motivo: "${reason}"`;
+        waiterConfirmModal.classList.add("active");
+    });
+});
+
+document.getElementById("waiterConfirmClose").addEventListener("click", () => {
+    waiterConfirmModal.classList.remove("active");
+});
+
+async function enviarLlamadaMesero(reason) {
+    const llamada = {
+        mesa:       mesaActual,
+        motivo:     reason,
+        estado:     "pendiente",   // pendiente → atendido
+        created_at: new Date().toISOString()
+    };
+
+    if (USE_FIREBASE) {
+        try {
+            await initFirebase();
+            const { addDoc, collection } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+            await addDoc(collection(db, "llamadas"), llamada);
+            console.log("Llamada al mesero enviada a Firebase ✓");
+            return;
+        } catch (err) {
+            console.warn("Firebase falló:", err);
+        }
+    }
+    // Fallback local
+    const existentes = JSON.parse(localStorage.getItem("menuAR_llamadas") || "[]");
+    existentes.push({ id: "llamada_" + Date.now(), ...llamada });
+    localStorage.setItem("menuAR_llamadas", JSON.stringify(existentes));
+}
 
 // ============ INIT ============
 detectarMesa();
