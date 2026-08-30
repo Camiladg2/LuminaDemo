@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina Gastrobar - Menú</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="menu-container">
+        <!-- Encabezado / Logo -->
+        <header class="menu-header">
+            <div class="logo-box">
+                <div class="logo-placeholder">
+                    <div class="logo-icon">✿</div>
+                    <span class="logo-text">Lumina</span>
+                    <span class="logo-sub">EST. 2024</span>
+                </div>
+            </div>
+            <h1 class="restaurant-name">Lumina Gastrobar</h1>
+        </header>
+
+        <!-- Cuadrícula de Platos -->
+        <main class="menu-grid">
+            
+            <!-- Plato 1 -->
+            <div class="menu-card">
+                <div class="image-placeholder bg-papas"></div>
+                <div class="card-info">
+                    <h3>Papas Nativas</h3>
+                    <p class="price">$35.000</p>
+                </div>
+            </div>
+
+            <!-- Plato 2 (¡MODELO 36° INTERACTIVO EN EL MENÚ!) -->
+            <div class="menu-card border-black" id="openModalBtn">
+                <div class="model-menu-wrapper">
+                    <model-viewer
+                        src="/Model/carrot_cake.glb"
+                        alt="Volcán de Chocolate"
+                        poster="/Images/cake.png"
+                        auto-rotate
+                        interaction-prompt="none">
+                    </model-viewer>
+                </div>
+                <div class="card-info">
+                    <h3>Volcan de Chocolate</h3>
+                    <p class="price">$17.800</p>
+                </div>
+            </div>
+
+            <!-- Plato 3 -->
+            <div class="menu-card border-black">
+                <div class="image-placeholder bg-huevos"></div>
+                <div class="card-info">
+                    <h3>Huevos Revueltos</h3>
+                    <p class="price">$8.000</p>
+                </div>
+            </div>
+
+            <!-- Plato 4 -->
+            <div class="menu-card border-black">
+                <div class="image-placeholder bg-hamburguesa"></div>
+                <div class="card-info">
+                    <h3>Hamburguesa Querida</h3>
+                    <p class="price">$38.000</p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- VENTANA MODAL (PANTALLA COMPLETA AL HACER CLIC) -->
+    <div class="modal-overlay" id="3dModal">
+        <div class="modal-content">
+            <!-- Botón para cerrar -->
+            <button class="close-btn" id="closeModalBtn">&times;</button>
+
+            <!-- Visor interactivo con controles de arrastre y botón AR -->
+            <model-viewer
+                id="modelViewer"
+                src="/Model/carrot_cake.glb"
+                alt="Volcán de Chocolate 3D"
+                poster="/Images/cake.png"
+                auto-rotate
+                camera-controls
+                touch-action="none"
+                ar
+                ar-modes="webxr scene-viewer quick-look">
+                
+                <button slot="ar-button" style="background-color: #ff5722; color: white; border: none; padding: 10px 20px; border-radius: 5px; position: absolute; top: 16px; right: 16px; font-weight: bold; cursor: pointer; z-index: 10;">
+                    Ver en mi mesa (AR) 📸
+                </button>
+            </model-viewer>
+
+            <!-- Botón inferior para ordenar -->
+            <button class="order-btn">Hacer Pedido!</button>
+        </div>
+    </div>
+
+    <!-- Lógica interactiva -->
+    <script src="script.js"></script>
+
+    <!-- Scripts obligatorios de Google -->
+<!-- Scripts obligatorios de Google para renderizar el modelo 3D -->
+    <script
+        type="module"
+        src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
+    ></script>
+    <script
+        nomodule
+        src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"
+    ></script>
+
+</body>
+</html>
