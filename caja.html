@@ -30,7 +30,6 @@
             </div>
             <div class="c-header-actions">
                 <button class="c-btn-icon" id="soundBtn" title="Silenciar">🔔</button>
-                <button class="c-btn-outline c-btn-danger" id="limpiarDiaBtn" title="Limpiar todos los datos del día">🗑️ Limpiar día</button>
             </div>
         </div>
     </header>
@@ -57,6 +56,19 @@
     <!-- TAB FACTURADOS -->
     <div class="c-tab-content" id="tab-facturados">
         <div class="c-section-title">Pedidos ya pagados hoy</div>
+
+        <!-- Filtros por método de pago -->
+        <div class="c-metodo-filtros">
+            <button class="c-metodo-chip active" data-metodo="todos" id="filtroChip_todos">Todos</button>
+            <button class="c-metodo-chip" data-metodo="Efectivo" id="filtroChip_Efectivo">💵 Efectivo</button>
+            <button class="c-metodo-chip" data-metodo="Tarjeta" id="filtroChip_Tarjeta">💳 Tarjeta</button>
+            <button class="c-metodo-chip" data-metodo="Transferencia" id="filtroChip_Transferencia">📱 Transf.</button>
+            <button class="c-metodo-chip c-metodo-chip-calendario" id="abrirHistorialBtn">📅 Historial</button>
+        </div>
+        <div class="c-facturados-total" id="facturadosTotalFiltro"></div>
+
+        <p class="c-section-hint">El día se cierra solo: a la medianoche, lo facturado se guarda en el historial (últimos 30 días) y esta lista empieza limpia para el nuevo día.</p>
+
         <div class="c-orders-grid" id="facturadosGrid">
             <div class="c-empty"><div class="c-empty-icon">✅</div><p>Aún no hay pedidos facturados</p></div>
         </div>
@@ -92,7 +104,7 @@
 
             <div class="c-factura-totals">
                 <div class="c-factura-row"><span>Subtotal</span><span id="fSubtotal"></span></div>
-                <div class="c-factura-row"><span>IVA (19%)</span><span id="fIva"></span></div>
+                <div class="c-factura-row"><span>IVA (8%)</span><span id="fIva"></span></div>
                 <div class="c-factura-row total-row"><span>TOTAL</span><span id="fTotal"></span></div>
             </div>
 
@@ -116,19 +128,46 @@
         </div>
     </div>
 
-    <!-- MODAL CONFIRMAR LIMPIEZA DEL DÍA -->
-    <div class="c-modal-overlay" id="limpiarDiaModal">
-        <div class="c-modal">
+    <!-- MODAL HISTORIAL / CALENDARIO -->
+    <div class="c-modal-overlay" id="historialModal">
+        <div class="c-modal c-modal-historial">
             <div class="c-modal-header">
-                <h2>⚠️ Limpiar todos los datos del día</h2>
-                <button class="c-modal-close" id="closeLimpiarDiaBtn">✕</button>
+                <h2>📅 Historial de días</h2>
+                <button class="c-modal-close" id="closeHistorialBtn">✕</button>
             </div>
-            <p style="color:#ccc;font-size:14px;line-height:1.5">
-                Esto borrará <strong>todos</strong> los pedidos y llamadas registrados hoy (facturados y por facturar) en este sistema.
-                Esta acción <strong>no se puede deshacer</strong>. Úsalo solo al cerrar el día.
-            </p>
-            <button class="c-btn-primary" id="confirmarLimpiarDiaBtn" style="background:linear-gradient(135deg,#ff5555,#ff8a8a);box-shadow:0 4px 14px rgba(255,85,85,0.35)">Sí, borrar todo</button>
-            <button class="c-btn-secondary" id="cancelarLimpiarDiaBtn">Cancelar</button>
+            <p class="c-section-hint" style="margin:-6px 0 0">Se guardan los últimos 30 días. Elige una fecha para ver lo facturado ese día.</p>
+            <input type="date" id="historialFecha" class="c-input">
+            <div id="historialContenido">
+                <div class="c-empty"><p>Elige una fecha para ver el resumen</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL RECIBO / FACTURA IMPRESA -->
+    <div class="c-modal-overlay" id="reciboModal">
+        <div class="c-modal c-modal-print">
+            <div class="c-print-header">
+                <div class="c-print-logo">Menu<span style="color:#d4af37">AR</span></div>
+                <div class="c-print-sub">FACTURA DE VENTA</div>
+                <div class="c-print-date" id="rDate"></div>
+            </div>
+            <div class="c-print-mesa" id="rMesa"></div>
+            <div class="c-print-items" id="rItems"></div>
+            <div class="c-print-divider"></div>
+            <div class="c-print-totals">
+                <div class="c-print-total-row"><span>Subtotal</span><span id="rSubtotal"></span></div>
+                <div class="c-print-total-row"><span>IVA (8%)</span><span id="rIva"></span></div>
+                <div class="c-print-total-row final"><span>TOTAL</span><span id="rTotal"></span></div>
+            </div>
+            <div class="c-print-metodo" id="rMetodo"></div>
+            <div class="c-print-footer">
+                ¡Gracias por tu visita!<br>
+                Vuelve pronto — MenuAR
+            </div>
+            <div class="c-print-actions">
+                <button class="c-btn-primary" id="imprimirReciboBtn">🖨️ Imprimir factura</button>
+                <button class="c-btn-secondary" id="cerrarReciboBtn">Cerrar</button>
+            </div>
         </div>
     </div>
 

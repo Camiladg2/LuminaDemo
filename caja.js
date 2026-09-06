@@ -15,7 +15,7 @@
         appId:             "1:1024512044720:web:c148b3c34938e2221c1575"    // ej: "1:123456789012:web:abcdefabcdef"
     };
 
-const IVA_RATE     = 0.19;
+const IVA_RATE     = 0.08;
 const USE_FIREBASE = FIREBASE_CONFIG.apiKey !== "";
 
 // ── ESTADO ────────────────────────────────────────────────
@@ -26,6 +26,7 @@ let metodoSeleccionado = "Efectivo";
 let soundEnabled       = true;
 let toastTimer         = null;
 let conocidos          = new Set();
+let filtroMetodo       = "todos";   // filtro activo en tab facturados
 
 // ── FIREBASE ──────────────────────────────────────────────
 async function initFirebase() {
@@ -113,7 +114,7 @@ async function actualizarPedido(id, datos) {
 // aquí automáticamente en cuanto el mesero los marca como "entregado".
 function render() {
     const activos    = pedidos.filter(p=>!["pagado","cancelado","listo"].includes(p.estado));
-    const facturados = pedidos.filter(p=>p.estado==="pagado");
+    const facturados = getFacturadosFiltrados();
     renderActivos(activos);
     renderFacturados(facturados);
     renderResumen(pedidos);
@@ -312,6 +313,7 @@ document.getElementById("confirmarPagoBtn").addEventListener("click", async ()=>
     const iva      = Math.round(subtotal*IVA_RATE);
     const total    = subtotal+iva;
     const ahora    = new Date().toISOString();
+    const pedidoParaRecibo = pedidoActivo;
 
     await actualizarPedido(pedidoActivo.id,{
         estado:      "pagado",
@@ -322,7 +324,30 @@ document.getElementById("confirmarPagoBtn").addEventListener("click", async ()=>
 
     document.getElementById("facturaModal").classList.remove("active");
     mostrarToast(`✅ Pago confirmado — Mesa ${pedidoActivo.mesa} · ${fmt(total)} · ${metodoSeleccionado}`);
+
+    abrirRecibo(pedidoParaRecibo, subtotal, iva, total, metodoSeleccionado, ahora);
     pedidoActivo = null;
+});
+
+// ── RECIBO / FACTURA IMPRESA ──────────────────────────────
+function abrirRecibo(pedido, subtotal, iva, total, metodo, fechaISO) {
+    document.getElementById("rDate").textContent  = new Date(fechaISO).toLocaleString("es-CO");
+    document.getElementById("rMesa").textContent   = `Mesa ${pedido.mesa||"—"}`;
+    document.getElementById("rItems").innerHTML = (pedido.items||[]).map(i=>`
+        <div class="c-print-item">
+            <span>${i.name}${i.qty>1?" x"+i.qty:""}</span>
+            <span>${i.price}</span>
+        </div>`).join("");
+    document.getElementById("rSubtotal").textContent = fmt(subtotal);
+    document.getElementById("rIva").textContent      = fmt(iva);
+    document.getElementById("rTotal").textContent     = fmt(total);
+    document.getElementById("rMetodo").textContent    = `Pagado con ${metodo}`;
+    document.getElementById("reciboModal").classList.add("active");
+}
+
+document.getElementById("imprimirReciboBtn").addEventListener("click", () => window.print());
+document.getElementById("cerrarReciboBtn").addEventListener("click", () => {
+    document.getElementById("reciboModal").classList.remove("active");
 });
 
 // ── TABS ──────────────────────────────────────────────────
@@ -382,24 +407,55 @@ document.getElementById("soundBtn").addEventListener("click",()=>{
     btn.classList.toggle("muted",!soundEnabled);
 });
 
-// ── LIMPIAR TODOS LOS DATOS DEL DÍA ───────────────────────
-document.getElementById("limpiarDiaBtn").addEventListener("click", () => {
-    document.getElementById("limpiarDiaModal").classList.add("active");
-});
-document.getElementById("closeLimpiarDiaBtn").addEventListener("click", () => {
-    document.getElementById("limpiarDiaModal").classList.remove("active");
-});
-document.getElementById("cancelarLimpiarDiaBtn").addEventListener("click", () => {
-    document.getElementById("limpiarDiaModal").classList.remove("active");
-});
+// ── CIERRE AUTOMÁTICO DE DÍA + HISTORIAL (últimos 30 días) ─
+const HISTORIAL_DIAS_MAX = 30;
 
-document.getElementById("confirmarLimpiarDiaBtn").addEventListener("click", async () => {
-    document.getElementById("limpiarDiaModal").classList.remove("active");
-    await limpiarDatosDelDia();
-    mostrarToast("🗑️ Datos del día borrados");
-});
+function hoyKey(d = new Date()) {
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+}
 
-async function limpiarDatosDelDia() {
+function construirResumenDia(listaPedidos) {
+    const pagados  = listaPedidos.filter(p=>p.estado==="pagado");
+    const totalNum = pagados.reduce((s,p)=>s+parseRaw(p.totalConIva||p.total),0);
+    return {
+        totalVentas:  totalNum,
+        pedidosCount: pagados.length,
+        pedidos:      pagados.map(p=>({
+            mesa: p.mesa, total: p.totalConIva||p.total, metodoPago: p.metodoPago,
+            fechaPago: p.fechaPago, origen: p.origen, tomadoPor: p.tomadoPor
+        }))
+    };
+}
+
+// Revisa si cambió el día desde la última vez que se abrió la caja.
+// Si cambió, archiva lo facturado de ayer en el historial y limpia la vista para hoy.
+async function chequearCierreDeDia() {
+    const diaGuardado = localStorage.getItem("menuAR_dia_actual");
+    const diaHoy       = hoyKey();
+    if (diaGuardado === diaHoy) return; // mismo día, nada que hacer
+
+    if (diaGuardado) {
+        // Había un día anterior abierto: lo archivamos antes de limpiar
+        const resumen = construirResumenDia(pedidos);
+        if (resumen.pedidosCount > 0) {
+            localStorage.setItem("menuAR_historial_"+diaGuardado, JSON.stringify(resumen));
+            const idx = JSON.parse(localStorage.getItem("menuAR_historial_index")||"[]");
+            if (!idx.includes(diaGuardado)) idx.push(diaGuardado);
+            idx.sort();
+            while (idx.length > HISTORIAL_DIAS_MAX) {
+                const viejo = idx.shift();
+                localStorage.removeItem("menuAR_historial_"+viejo);
+            }
+            localStorage.setItem("menuAR_historial_index", JSON.stringify(idx));
+        }
+        await limpiarParaNuevoDia();
+        mostrarToast("📅 Nuevo día — el historial de ayer quedó guardado");
+    }
+
+    localStorage.setItem("menuAR_dia_actual", diaHoy);
+}
+
+async function limpiarParaNuevoDia() {
     if (USE_FIREBASE && db) {
         try {
             const { collection, getDocs, deleteDoc, doc } =
@@ -413,7 +469,7 @@ async function limpiarDatosDelDia() {
                 ...snapLlamadas.docs.map(d => deleteDoc(doc(db,"llamadas",d.id)))
             ]);
             return;
-        } catch(e) { console.warn("Firebase falló al limpiar:", e); }
+        } catch(e) { console.warn("Firebase falló al cerrar el día:", e); }
     }
     localStorage.removeItem("menuAR_pedidos");
     localStorage.removeItem("menuAR_llamadas");
@@ -421,5 +477,91 @@ async function limpiarDatosDelDia() {
     cargarLocal();
 }
 
+// Revisa cada minuto por si cruzamos la medianoche con la caja abierta
+setInterval(chequearCierreDeDia, 60000);
+
+// ── HISTORIAL: MODAL CALENDARIO ────────────────────────────
+document.getElementById("abrirHistorialBtn").addEventListener("click", () => {
+    const hoy = hoyKey();
+    const input = document.getElementById("historialFecha");
+    input.max = hoy;
+    const hace30 = new Date(); hace30.setDate(hace30.getDate()-HISTORIAL_DIAS_MAX);
+    input.min = hoyKey(hace30);
+    if (!input.value) input.value = hoy;
+    document.getElementById("historialModal").classList.add("active");
+    renderHistorialDia(input.value);
+});
+document.getElementById("closeHistorialBtn").addEventListener("click", () => {
+    document.getElementById("historialModal").classList.remove("active");
+});
+document.getElementById("historialFecha").addEventListener("change", (e) => {
+    renderHistorialDia(e.target.value);
+});
+
+function renderHistorialDia(fechaKey) {
+    const el  = document.getElementById("historialContenido");
+    const hoy = hoyKey();
+
+    let resumen;
+    if (fechaKey === hoy) {
+        resumen = construirResumenDia(pedidos); // día en curso: datos en vivo
+    } else {
+        const raw = localStorage.getItem("menuAR_historial_"+fechaKey);
+        resumen = raw ? JSON.parse(raw) : null;
+    }
+
+    if (!resumen || resumen.pedidosCount === 0) {
+        el.innerHTML = `<div class="c-historial-empty">Sin ventas registradas ese día.</div>`;
+        return;
+    }
+
+    const promedio = Math.round(resumen.totalVentas / resumen.pedidosCount);
+    el.innerHTML = `
+        <div class="c-historial-day-summary">
+            <div class="c-summary-grid" style="grid-template-columns:repeat(3,1fr)">
+                <div class="c-summary-card"><div class="c-summary-num">${fmt(resumen.totalVentas)}</div><div class="c-summary-label">Ventas</div></div>
+                <div class="c-summary-card"><div class="c-summary-num">${resumen.pedidosCount}</div><div class="c-summary-label">Pedidos</div></div>
+                <div class="c-summary-card"><div class="c-summary-num">${fmt(promedio)}</div><div class="c-summary-label">Promedio</div></div>
+            </div>
+            <div class="c-historial-lista">
+                ${resumen.pedidos.map(p=>`
+                    <div class="c-historial-item">
+                        <span>Mesa ${p.mesa||"—"} <span class="c-historial-item-meta">· ${p.metodoPago||"—"}</span></span>
+                        <span class="c-historial-item-total">${p.total}</span>
+                    </div>`).join("")}
+            </div>
+        </div>`;
+}
+
+// ── FILTROS FACTURADOS ────────────────────────────────────
+function getFacturadosFiltrados() {
+    let lista = pedidos.filter(p => p.estado === "pagado");
+
+    if (filtroMetodo !== "todos") {
+        lista = lista.filter(p => (p.metodoPago || "") === filtroMetodo);
+    }
+
+    return lista;
+}
+
+document.querySelectorAll(".c-metodo-chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+        filtroMetodo = chip.dataset.metodo;
+
+        // Actualizar clase active en los chips
+        document.querySelectorAll(".c-metodo-chip").forEach(c =>
+            c.classList.toggle("active", c === chip)
+        );
+
+        const filtrados = getFacturadosFiltrados();
+        renderFacturados(filtrados);
+    });
+});
+
+
 // ── INIT ──────────────────────────────────────────────────
+if (!localStorage.getItem("menuAR_dia_actual")) {
+    localStorage.setItem("menuAR_dia_actual", hoyKey());
+}
+chequearCierreDeDia();
 startListeners();

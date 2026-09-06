@@ -85,6 +85,87 @@ html, body {
 
 .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
+/* ================= FILTROS DE CATEGORÍA ================= */
+.menu-filters {
+    margin: 0 0 18px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Segmentado de grupos: Todo / Comida / Postres / Bebidas */
+.filter-groups {
+    display: flex;
+    gap: 6px;
+    background-color: #151515;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 4px;
+}
+.filter-group-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #999999;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 9px 6px;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+.filter-group-btn.active {
+    background-color: #d4af37;
+    color: #111111;
+}
+.filter-group-btn:hover:not(.active) { color: #d4af37; }
+
+/* Chips de categoría, scroll horizontal sin barra visible */
+.filter-chips-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+    scroll-behavior: smooth;
+}
+.filter-chips-scroll::-webkit-scrollbar { display: none; }
+
+.filter-chip {
+    flex-shrink: 0;
+    background-color: #222222;
+    border: 1px solid #333333;
+    color: #cccccc;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.filter-chip.active {
+    background-color: #d4af37;
+    border-color: #d4af37;
+    color: #111111;
+}
+.filter-chip:hover:not(.active) { border-color: #d4af37; color: #d4af37; }
+.filter-chip.filter-chip-hidden { display: none; }
+
+/* Tarjetas ocultas por el filtro */
+.menu-card.filter-hidden { display: none; }
+
+/* Estado vacío cuando una categoría no tiene platos aún */
+.filter-empty {
+    text-align: center;
+    padding: 40px 16px;
+    color: #666666;
+    animation: fadeIn 0.3s ease;
+}
+.filter-empty-icon { font-size: 40px; margin-bottom: 10px; }
+.filter-empty p { font-size: 13px; line-height: 1.6; margin: 0; }
+
 .menu-card {
     background-color: #2a2a2a;
     border-radius: 10px;
@@ -826,3 +907,495 @@ html, body {
     border-color: #d4af37;
     transform: translateX(4px);
 }
+
+/* ================= NOTA PARA COCINA — MODAL 3D ================= */
+.dish-note-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 2px;
+}
+.hotspot-note-section {
+    margin: 12px 20px 0;
+}
+.dish-note-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #aaaaaa;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.dish-note-opt {
+    font-weight: 400;
+    color: #666;
+}
+.dish-note-input {
+    width: 100%;
+    background-color: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #ffffff;
+    font-size: 13px;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    line-height: 1.5;
+    transition: border-color 0.2s;
+}
+.dish-note-input:focus {
+    border-color: #d4af37;
+}
+.dish-note-input::placeholder { color: #555; }
+
+/* ================= NOTA EN CARRITO ================= */
+.cart-item-nota {
+    font-size: 11px;
+    color: #d4af37;
+    margin-top: 3px;
+    font-style: italic;
+    word-break: break-word;
+}
+.cart-nota-edit {
+    margin-top: 5px;
+}
+.cart-nota-input {
+    width: 100%;
+    background-color: #1f1f1f;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: #cccccc;
+    font-size: 12px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.cart-nota-input:focus { border-color: #d4af37; }
+.cart-nota-input::placeholder { color: #444; font-style: italic; }
+
+/* ================= PLATO MÁS PEDIDO DEL DÍA ================= */
+.plato-dia-banner {
+    margin: 0 0 16px 0;
+    background: linear-gradient(135deg, #1a1200, #2a1e00);
+    border: 1px solid rgba(212,175,55,0.5);
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: fadeIn 0.5s ease;
+    position: relative;
+    overflow: hidden;
+}
+.plato-dia-banner::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,175,55,0.15), transparent 70%);
+    pointer-events: none;
+}
+.plato-dia-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background-color: #d4af37;
+    color: #111;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    align-self: flex-start;
+    animation: badgePulse 3s ease-in-out infinite;
+}
+.plato-dia-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.plato-dia-img {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    object-fit: cover;
+    background-color: #3a3a3a;
+    flex-shrink: 0;
+    border: 2px solid rgba(212,175,55,0.4);
+}
+.plato-dia-text { flex: 1; }
+.plato-dia-nombre {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.2;
+}
+.plato-dia-veces {
+    font-size: 12px;
+    color: #d4af37;
+    margin-top: 3px;
+    font-weight: 600;
+}
+.plato-dia-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #d4af37, #f5d76e);
+    color: #111;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 0;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+.plato-dia-btn:hover { transform: translateY(-1px); }
+
+/* ================= BANNER PROMO 2x1 (lunes/miércoles) ================= */
+.promo-banner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 34px;
+    background: linear-gradient(90deg, #3a2a00, #d4af37, #3a2a00);
+    background-size: 200% 100%;
+    animation: promoShimmer 6s linear infinite;
+    overflow: hidden;
+    z-index: 500;
+}
+@keyframes promoShimmer {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+.promo-track {
+    display: flex;
+    white-space: nowrap;
+    animation: promoScroll 18s linear infinite;
+    flex: 1;
+}
+@keyframes promoScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+.promo-text {
+    font-size: 12px;
+    font-weight: 800;
+    color: #111111;
+    letter-spacing: 0.3px;
+    padding-right: 4px;
+}
+.promo-close {
+    background: transparent;
+    border: none;
+    color: #111111;
+    opacity: 0.6;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    padding: 0 12px;
+    flex-shrink: 0;
+    transition: opacity 0.2s;
+}
+.promo-close:hover { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+    .promo-track  { animation: none; }
+    .promo-banner { animation: none; background-position: 0 50%; }
+}
+
+/* ================================================================
+   MODAL BIENVENIDA / OCASIÓN ESPECIAL
+   ================================================================ */
+
+.bienvenida-overlay {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #0a0a1a 100%);
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.bienvenida-overlay.closing {
+    animation: bvFadeOut 0.4s ease forwards;
+}
+@keyframes bvFadeOut {
+    to { opacity: 0; transform: scale(1.03); }
+}
+
+.bienvenida-wrapper {
+    width: 100%;
+    max-width: 480px;
+    animation: bvSlideIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes bvSlideIn {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+}
+
+.bienvenida-step {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Paso 1 */
+.bv-header { text-align: center; }
+
+.bv-logo {
+    font-size: 18px;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    opacity: 0.6;
+}
+.bv-logo span { color: #d4af37; }
+
+.bv-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 8px;
+    line-height: 1.2;
+}
+
+.bv-sub {
+    font-size: 15px;
+    color: #aaaaaa;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.bv-ocasiones {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.bv-ocasion-btn {
+    background-color: #1a1a2e;
+    border: 2px solid #2a2a4e;
+    border-radius: 14px;
+    padding: 14px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #ffffff;
+}
+.bv-ocasion-btn:hover {
+    border-color: #d4af37;
+    background-color: #2a1a00;
+    transform: translateY(-3px);
+}
+.bv-ocasion-btn.selected {
+    border-color: #d4af37;
+    background: linear-gradient(135deg, #2a1a00, #3a2a00);
+    box-shadow: 0 0 20px rgba(212,175,55,0.3);
+    transform: scale(1.04);
+}
+
+.bv-ocasion-emoji { font-size: 28px; line-height: 1; }
+.bv-ocasion-label { font-size: 11px; font-weight: 700; letter-spacing: 0.3px; color: #cccccc; }
+
+.bv-skip-btn {
+    background: transparent;
+    border: none;
+    color: #555;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: center;
+    padding: 8px;
+    transition: color 0.2s;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+.bv-skip-btn:hover { color: #999; }
+
+/* Paso 2: obsequio */
+.bv-obsequio-header { text-align: center; }
+
+.bv-confetti {
+    font-size: 24px;
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+    animation: confettiDance 2s ease-in-out infinite;
+}
+@keyframes confettiDance {
+    0%,100% { transform: scale(1); }
+    50%      { transform: scale(1.08); }
+}
+
+.bv-ocasion-elegida {
+    font-size: 14px;
+    color: #d4af37;
+    font-weight: 700;
+    margin: 4px 0 8px;
+}
+
+.bv-regalo-txt {
+    font-size: 13px;
+    color: #aaaaaa;
+    margin: 0;
+}
+
+.bv-regalo-cards {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 4px 2px;
+}
+.bv-regalo-cards::-webkit-scrollbar { display: none; }
+
+.bv-regalo-card {
+    flex: 1;
+    min-width: 140px;
+    background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+    border: 1px solid rgba(212,175,55,0.4);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: bvCardIn 0.6s ease both;
+}
+.bv-regalo-card:nth-child(2) { animation-delay: 0.15s; }
+
+@keyframes bvCardIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.bv-model-wrap {
+    width: 100%;
+    height: 140px;
+    background: linear-gradient(135deg, #111, #1a1a2e);
+}
+.bv-model-wrap model-viewer {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
+
+.bv-regalo-info { padding: 12px; }
+.bv-regalo-nombre { font-size: 13px; font-weight: 700; color: #ffffff; margin-bottom: 4px; }
+.bv-regalo-desc   { font-size: 11px; color: #888; line-height: 1.4; margin-bottom: 8px; }
+.bv-regalo-gratis {
+    display: inline-block;
+    background: linear-gradient(135deg, #d4af37, #f5d76e);
+    color: #111;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+}
+
+.bv-continuar-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #d4af37, #f5d76e);
+    color: #111;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 20px rgba(212,175,55,0.4);
+    transition: transform 0.15s ease;
+}
+.bv-continuar-btn:hover { transform: translateY(-2px); }
+
+/* ================================================================
+   MODAL POSTRE DE CIERRE
+   ================================================================ */
+
+.postre-modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+}
+
+.postre-modal-header { text-align: center; }
+.postre-emoji  { font-size: 48px; line-height: 1; margin-bottom: 8px; }
+.postre-title  { font-size: 22px; font-weight: 800; color: #ffffff; margin: 0 0 6px; }
+.postre-sub    { font-size: 13px; color: #888; margin: 0; }
+
+.postre-opciones {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.postre-card {
+    background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+    border: 1px solid #333;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px 10px 10px;
+    transition: border-color 0.2s, transform 0.15s;
+    overflow: hidden;
+}
+.postre-card:hover {
+    border-color: #d4af37;
+    transform: translateX(3px);
+}
+
+.postre-model-wrap {
+    width: 72px;
+    height: 72px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #111, #1a1a2e);
+}
+.postre-model-wrap model-viewer {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    pointer-events: none;
+}
+
+.postre-card-info { flex: 1; }
+.postre-card-nombre { font-size: 14px; font-weight: 700; color: #ffffff; }
+.postre-card-desc   { font-size: 11px; color: #888; margin-top: 2px; line-height: 1.3; }
+.postre-card-precio { font-size: 13px; font-weight: 800; color: #d4af37; margin-top: 4px; }
+
+.postre-elegir-btn {
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #d4af37, #f5d76e);
+    color: #111;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.15s;
+    white-space: nowrap;
+}
+.postre-elegir-btn:hover { transform: scale(1.06); }
+
+.postre-saltar-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px solid #333;
+    color: #888;
+    border-radius: 10px;
+    padding: 13px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 4px;
+}
+.postre-saltar-btn:hover { border-color: #555; color: #aaa; }

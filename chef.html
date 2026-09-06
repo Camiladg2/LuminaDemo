@@ -47,6 +47,28 @@
         .filter-tab { flex-shrink: 0; background-color: #1a1a1a; border: 1px solid #333; color: #888; padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
         .filter-tab.active, .filter-tab:hover { background-color: #d4af37; color: #111; border-color: #d4af37; }
 
+        /* ESTACIONES DE COCINA */
+        .station-label { padding: 12px 24px 4px; font-size: 10px; font-weight: 800; color: #555; letter-spacing: 1.5px; text-transform: uppercase; }
+        .station-tabs { display: flex; gap: 8px; padding: 0 24px 4px; overflow-x: auto; scrollbar-width: none; }
+        .station-tabs::-webkit-scrollbar { display: none; }
+        .station-tab {
+            flex-shrink: 0; background-color: #1a1a1a; border: 1px solid #333; color: #999;
+            padding: 9px 16px; border-radius: 10px; font-size: 13px; font-weight: 700;
+            cursor: pointer; transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 6px;
+        }
+        .station-tab .station-count {
+            background-color: rgba(255,255,255,0.12); border-radius: 10px; font-size: 11px; padding: 1px 7px; font-weight: 800;
+        }
+        .station-tab.active { color: #111; border-color: transparent; }
+        .station-tab[data-station="todas"].active     { background-color: #d4af37; }
+        .station-tab[data-station="entradas"].active  { background-color: #4caf50; }
+        .station-tab[data-station="fuertes"].active   { background-color: #e67e22; }
+        .station-tab[data-station="postres"].active   { background-color: #e91e8c; }
+        .station-tab[data-station="entradas"]:hover:not(.active) { border-color: #4caf50; color: #4caf50; }
+        .station-tab[data-station="fuertes"]:hover:not(.active)  { border-color: #e67e22; color: #e67e22; }
+        .station-tab[data-station="postres"]:hover:not(.active)  { border-color: #e91e8c; color: #e91e8c; }
+        .station-tab[data-station="todas"]:hover:not(.active)    { border-color: #d4af37; color: #d4af37; }
+
         /* GRID */
         .orders-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; padding: 16px 24px 32px; }
 
@@ -60,9 +82,14 @@
         .order-time     { font-size: 11px; color: #555; text-align: right; }
         .order-time .elapsed { font-size: 20px; font-weight: 700; color: #888; display: block; line-height: 1; }
         .order-items { padding: 12px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
-        .order-item-row { display: flex; align-items: center; gap: 10px; }
+        .order-item-row { display: flex; align-items: center; gap: 10px; border-left: 3px solid #444; padding-left: 8px; border-radius: 0 6px 6px 0; transition: opacity 0.2s; }
         .order-item-img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; background-color: #2a2a2a; flex-shrink: 0; }
         .order-item-name { flex: 1; font-size: 14px; color: #eee; font-weight: 600; }
+        .station-pill {
+            font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 20px;
+            letter-spacing: 0.3px; text-transform: uppercase; white-space: nowrap; flex-shrink: 0;
+        }
+        .order-item-row.item-dim { opacity: 0.3; }
         /* SIN precio en cocina */
         .order-actions { padding: 10px 16px 14px; display: flex; gap: 8px; }
         .estado-btn { flex: 1; padding: 9px 10px; border-radius: 8px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px; }
@@ -103,6 +130,42 @@
         @keyframes newOrderFlash { 0%,100%{border-color:#2a2a2a} 50%{border-color:#d4af37;box-shadow:0 0 20px rgba(212,175,55,0.3)} }
         .order-card.new-order { animation: newOrderFlash 1s ease 3, slideInCard 0.35s ease both; }
 
+        .order-item-nota {
+            font-size: 11px;
+            color: #f5a623;
+            background-color: rgba(245,166,35,0.1);
+            border-left: 2px solid #f5a623;
+            padding: 2px 6px;
+            border-radius: 0 4px 4px 0;
+            margin-top: 3px;
+            font-style: italic;
+        }
+        /* ====== OCASIÓN ESPECIAL ====== */
+        .ocasion-card {
+            border-color: #9c27b0 !important;
+            box-shadow: 0 0 12px rgba(156,39,176,0.25);
+        }
+        .ocasion-card.new-order {
+            animation: ocasionFlash 1s ease 4, slideInCard 0.35s ease both;
+        }
+        @keyframes ocasionFlash {
+            0%,100% { border-color: #9c27b0; box-shadow: 0 0 12px rgba(156,39,176,0.25); }
+            50%     { border-color: #e040fb; box-shadow: 0 0 24px rgba(224,64,251,0.5); }
+        }
+        .ocasion-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, #9c27b022, #e040fb22);
+            border: 1px solid #9c27b066;
+            color: #e040fb;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 20px;
+            margin-top: 4px;
+            letter-spacing: 0.3px;
+        }
         @media (max-width: 600px) {
             .chef-header { padding: 12px 16px; }
             .stats-bar   { padding: 10px 16px; }
@@ -173,6 +236,14 @@
         <button class="filter-tab" data-filter="listo">🟢 Listos</button>
     </div>
 
+    <div class="station-label">Filtrar por estación de cocina</div>
+    <div class="station-tabs" id="stationTabs">
+        <button class="station-tab active" data-station="todas">🍽️ Todas</button>
+        <button class="station-tab" data-station="entradas">🥗 Entradas <span class="station-count" id="countEntradas">0</span></button>
+        <button class="station-tab" data-station="fuertes">🍖 Platos fuertes <span class="station-count" id="countFuertes">0</span></button>
+        <button class="station-tab" data-station="postres">🍰 Postres <span class="station-count" id="countPostres">0</span></button>
+    </div>
+
     <div class="orders-grid" id="ordersGrid">
         <div class="empty-state">
             <div class="empty-icon">👨‍🍳</div>
@@ -210,6 +281,7 @@
     // ── ESTADO ────────────────────────────────────────────────
     let pedidos      = [];
     let filtroActual = "todos";
+    let estacionActual = "todas";
     let conocidos    = new Set();
     let soundEnabled = true;
     let toastTimer   = null;
@@ -219,6 +291,41 @@
     const CHEF_HIDDEN_KEY = "menuAR_chef_ocultos";
     function getChefHidden() { return new Set(JSON.parse(localStorage.getItem(CHEF_HIDDEN_KEY) || "[]")); }
     function saveChefHidden(set) { localStorage.setItem(CHEF_HIDDEN_KEY, JSON.stringify([...set])); }
+
+    // ── ESTACIONES DE COCINA (entradas / platos fuertes / postres) ──
+    // Cada persona en cocina se encarga de una estación. Todo ítem del pedido
+    // se identifica por color + pastilla para que cada quien sepa qué es suyo.
+    const ESTACIONES = {
+        entradas: { label: "Entradas",       emoji: "🥗", color: "#4caf50" },
+        fuertes:  { label: "Platos fuertes", emoji: "🍖", color: "#e67e22" },
+        postres:  { label: "Postres",        emoji: "🍰", color: "#e91e8c" },
+        otros:    { label: "Bar / Otros",    emoji: "🥤", color: "#888888" },
+    };
+
+    // Categoría del menú (la misma que usa el panel del comensal) → estación de cocina
+    const CATEGORIA_A_ESTACION = {
+        "tablas": "entradas", "ensaladas": "entradas",
+        "platos-fuertes": "fuertes", "pastas": "fuertes", "parrilla": "fuertes",
+        "de-autor": "fuertes", "hamburguesas": "fuertes",
+        "postres": "postres", "gelatos": "postres", "copas-helado": "postres",
+        "crepes": "postres", "mini-wafles": "postres",
+        "bebidas": "otros", "cocteles": "otros", "sangrias": "otros", "licores": "otros",
+    };
+
+    // Respaldo por nombre, para pedidos viejos que no traigan "categoria"
+    const NOMBRE_A_ESTACION = {
+        "Papas Nativas": "entradas",
+        "Plato Estrella": "postres",
+        "Summer Tea": "otros",
+        "Hamburguesa Insignia": "fuertes",
+        "Sushi Boat": "fuertes",
+    };
+
+    function estacionDeItem(i) {
+        if (i.categoria && CATEGORIA_A_ESTACION[i.categoria]) return CATEGORIA_A_ESTACION[i.categoria];
+        if (NOMBRE_A_ESTACION[i.name]) return NOMBRE_A_ESTACION[i.name];
+        return "otros";
+    }
 
     // ── FIREBASE ──────────────────────────────────────────────
     async function initFirebase() {
@@ -326,12 +433,20 @@
             ? pedidos.filter(p => (!["listo","pagado","entregado"].includes(p.estado) || filtroActual === "todos") && noOcultos(p))
             : pedidos.filter(p => p.estado === filtroActual && noOcultos(p));
 
-        const activos = filtroActual === "todos"
+        let activos = filtroActual === "todos"
             ? pedidos.filter(p => !["pagado"].includes(p.estado) && noOcultos(p))
             : visibles;
 
+        // Filtro por estación: solo pedidos que tengan al menos un ítem de esa estación
+        if (estacionActual !== "todas") {
+            activos = activos.filter(p => (p.items||[]).some(i => estacionDeItem(i) === estacionActual));
+        }
+
         if (activos.length === 0) {
-            grid.innerHTML = `<div class="empty-state"><div class="empty-icon">👨‍🍳</div><h3>Sin pedidos activos</h3><p>Los pedidos aparecen aquí en tiempo real.</p></div>`;
+            const msg = estacionActual !== "todas"
+                ? `<div class="empty-state"><div class="empty-icon">${ESTACIONES[estacionActual].emoji}</div><h3>Nada para ${ESTACIONES[estacionActual].label.toLowerCase()}</h3><p>No hay pedidos con ítems de esta estación ahora mismo.</p></div>`
+                : `<div class="empty-state"><div class="empty-icon">👨‍🍳</div><h3>Sin pedidos activos</h3><p>Los pedidos aparecen aquí en tiempo real.</p></div>`;
+            grid.innerHTML = msg;
             return;
         }
 
@@ -341,19 +456,33 @@
             const origen = p.origen === "mesero"
                 ? `📋 Tomado por ${p.tomadoPor || "mesero"}`
                 : "📱 Pedido del cliente";
-            // Sin precio en cocina — solo nombre e imagen
-            const items  = (p.items||[]).map(i => `
-                <div class="order-item-row">
+            // Sin precio en cocina — solo nombre e imagen, con color/pastilla de estación
+            const items  = (p.items||[]).map(i => {
+                const est   = estacionDeItem(i);
+                const info  = ESTACIONES[est];
+                const dim   = (estacionActual !== "todas" && est !== estacionActual) ? "item-dim" : "";
+                return `
+                <div class="order-item-row ${dim}" style="border-left-color:${info.color}">
                     <img class="order-item-img" src="${i.poster||""}" alt="${i.name}" onerror="this.style.display='none'">
-                    <span class="order-item-name">${i.name}${i.qty > 1 ? " <small style='color:#888'>x"+i.qty+"</small>" : ""}</span>
-                </div>`).join("");
+                    <div style="flex:1">
+                        <span class="order-item-name">${i.name}${i.qty > 1 ? " <small style='color:#888'>x"+i.qty+"</small>" : ""}</span>
+                        ${i.nota ? `<div class="order-item-nota">📝 ${i.nota}</div>` : ""}
+                    </div>
+                    <span class="station-pill" style="background:${info.color}22;color:${info.color};border:1px solid ${info.color}66">${info.emoji} ${info.label}</span>
+                </div>`;
+            }).join("");
 
-            return `<div class="order-card ${isNew?"new-order":""}" data-id="${p.id}">
+            const ocasionBadge = p.ocasion
+                ? `<div class="ocasion-badge">🎉 Mesa en celebración: ${p.ocasion}</div>`
+                : "";
+
+            return `<div class="order-card ${isNew?"new-order":""} ${p.ocasion?"ocasion-card":""}" data-id="${p.id}">
                 <div class="order-card-header">
                     <div>
                         <div class="order-mesa">${mesa}</div>
                         <div class="order-mesa-sub">${(p.items||[]).length} ítem(s)</div>
                         <div class="order-origen">${origen}</div>
+                        ${ocasionBadge}
                     </div>
                     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
                         <span class="estado-badge ${badgeClass(p.estado)}">${badgeLabel(p.estado)}</span>
@@ -378,6 +507,17 @@
         document.getElementById("statPreparando").textContent = pedidos.filter(p=>p.estado==="preparando").length;
         document.getElementById("statListo").textContent      = pedidos.filter(p=>p.estado==="listo").length;
         document.getElementById("statTotal").textContent      = pedidos.filter(p=>p.estado!=="pagado").length;
+
+        // Ítems pendientes/en preparación por estación (lo que le falta a cada persona)
+        const activosTrabajo = pedidos.filter(p => ["pendiente","preparando"].includes(p.estado));
+        const conteoEstacion = { entradas: 0, fuertes: 0, postres: 0 };
+        activosTrabajo.forEach(p => (p.items||[]).forEach(i => {
+            const est = estacionDeItem(i);
+            if (conteoEstacion[est] !== undefined) conteoEstacion[est] += (i.qty || 1);
+        }));
+        document.getElementById("countEntradas").textContent = conteoEstacion.entradas;
+        document.getElementById("countFuertes").textContent  = conteoEstacion.fuertes;
+        document.getElementById("countPostres").textContent  = conteoEstacion.postres;
     }
 
     function actualizarHora() {
@@ -419,6 +559,15 @@
             document.querySelectorAll(".filter-tab").forEach(t=>t.classList.remove("active"));
             tab.classList.add("active");
             filtroActual = tab.dataset.filter;
+            renderPedidos();
+        });
+    });
+
+    document.querySelectorAll(".station-tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+            document.querySelectorAll(".station-tab").forEach(t=>t.classList.remove("active"));
+            tab.classList.add("active");
+            estacionActual = tab.dataset.station;
             renderPedidos();
         });
     });

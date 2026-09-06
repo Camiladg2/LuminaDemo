@@ -20,11 +20,11 @@ const USE_FIREBASE = FIREBASE_CONFIG.apiKey !== "";
 
 // ── MENÚ (igual que el menú del cliente) ─────────────────
 const MENU_ITEMS = [
-    { id:"p1", name:"Papas Nativas",        price:"$35.000", priceNum:35000, poster:"Images/papasnativas.jpg" },
-    { id:"p2", name:"Plato Estrella",       price:"$17.800", priceNum:17800, poster:"Images/cake.png"         },
-    { id:"p3", name:"Summer Tea",           price:"$8.000",  priceNum:8000,  poster:"Images/drink.png"        },
-    { id:"p4", name:"Hamburguesa Insignia", price:"$38.000", priceNum:38000, poster:"Images/burguer.png"      },
-    { id:"p5", name:"Sushi Boat",           price:"$32.000", priceNum:32000, poster:"Images/sushi.png"        },
+    { id:"p1", name:"Papas Nativas",        price:"$35.000", priceNum:35000, poster:"Images/papasnativas.jpg", categoria:"tablas"       },
+    { id:"p2", name:"Plato Estrella",       price:"$17.800", priceNum:17800, poster:"Images/cake.png",         categoria:"postres"      },
+    { id:"p3", name:"Summer Tea",           price:"$8.000",  priceNum:8000,  poster:"Images/drink.png",        categoria:"bebidas"      },
+    { id:"p4", name:"Hamburguesa Insignia", price:"$38.000", priceNum:38000, poster:"Images/burguer.png",      categoria:"hamburguesas" },
+    { id:"p5", name:"Sushi Boat",           price:"$32.000", priceNum:32000, poster:"Images/sushi.png",        categoria:"de-autor"     },
 ];
 
 const TOTAL_MESAS = 12;
@@ -130,6 +130,7 @@ async function initFirebase() {
     const { getFirestore  } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
     db = getFirestore(initializeApp(FIREBASE_CONFIG));
     console.log("Firebase Mesero conectado ✓");
+    initMessaging(); // 👈 COLOCA ESTA LÍNEA JUSTO AQUÍ
 }
 
 // ── LISTENERS ────────────────────────────────────────────
@@ -498,7 +499,7 @@ function actualizarCarritoMesero() {
 document.getElementById("meseroConfirmBtn").addEventListener("click", async () => {
     if (!mesaSeleccionada) { mostrarToast("⚠️ Selecciona una mesa primero"); return; }
     const items = MENU_ITEMS.filter(i=>(carrito[i.id]||0)>0).map(i=>({
-        name:i.name, price:i.price, priceNum:i.priceNum, poster:i.poster, qty:carrito[i.id]
+        name:i.name, price:i.price, priceNum:i.priceNum, poster:i.poster, qty:carrito[i.id], categoria:i.categoria||""
     }));
     if (items.length===0) { mostrarToast("⚠️ Agrega al menos un plato"); return; }
 
@@ -605,6 +606,103 @@ function vibrar() {
     } catch(e) {}
 }
 
+
+// ============ NOTIFICACIONES PUSH ============
+let messaging = null;
+
+async function initMessaging() {
+    console.log("🧪 Diagnosticando: Entrando a la función initMessaging()...");
+
+    if (!USE_FIREBASE || !db) {
+        console.log("❌ Diagnóstico: Se detuvo porque USE_FIREBASE o la base de datos (db) no están inicializados.");
+        return;
+    }
+    
+    // Verifica si el navegador soporta notificaciones
+    if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+        console.log("❌ Diagnóstico: Notificaciones o Service Workers NO son soportados por este navegador.");
+        return;
+    }
+    
+    console.log("🔄 Diagnóstico: Navegador compatible. Intentando importar SDK de Firebase Messaging...");
+    
+    try {
+        // Importa Firebase Messaging
+        const { getMessaging, getToken, onMessage } = 
+            await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js");
+        
+        console.log("✅ Diagnóstico: SDK de Messaging importado con éxito. Solicitando permisos al usuario...");
+        messaging = getMessaging();
+        
+        // Pide permiso al usuario
+        const permission = await Notification.requestPermission();
+        console.log(`📊 Diagnóstico: El permiso de notificaciones es: [${permission}]`);
+        
+        if (permission !== 'granted') {
+            console.log("❌ Diagnóstico: Permiso denegado. No se puede generar el Token.");
+            return;
+        }
+        
+        console.log("🔄 Diagnóstico: Permiso concedido. Registrando '/firebase-messaging-sw.js'...");
+        
+        // Registra el service worker y obtén el token
+        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+        console.log("✅ Diagnóstico: Service Worker registrado. Solicitando Token FCM a Firebase usando la clave VAPID...");
+        
+        const token = await getToken(messaging, {
+            serviceWorkerRegistration: registration,
+            vapidKey: "BKm-bqv5rAWjUgDYtGJiIBk068WYVKfQfrHNM9CvlV7fCdDsJih87QfJE_uOjEM7GGXgvFs39KDNZHlaWEFk-RY"
+        });
+        
+        console.log("🔥 Token FCM Generado con éxito:", token);
+        
+        // Guarda el token en Firestore asociado al mesero
+        console.log(`🔄 Diagnóstico: Intentando guardar el token para el mesero: ${nombreMesero}`);
+        await guardarTokenMesero(nombreMesero, token);
+        
+        // Escucha mensajes cuando el panel está abierto
+        onMessage(messaging, (payload) => {
+            console.log("🔔 Mensaje recibido en PRIMER PLANO:", payload);
+            mostrarToast(`🔔 ${payload.notification.title}: ${payload.notification.body}`);
+            beepLlamada();
+        });
+        
+    } catch (error) {
+        console.error("💥 Error crítico detectado en el proceso de messaging:", error);
+    }
+}
+
+async function guardarTokenMesero(nombre, token) {
+    if (USE_FIREBASE && db) {
+        try {
+            const { collection, doc, setDoc } = 
+                await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+            
+            // Guarda o actualiza el token del mesero
+            await setDoc(doc(db, "meseros", nombre), {
+                nombre: nombre,
+                tokenFCM: token,
+                updatedAt: new Date().toISOString()
+            }, { merge: true });
+            
+            console.log("Token guardado en Firestore ✓");
+        } catch (e) {
+            console.warn("Error guardando token en Firestore:", e);
+        }
+    }
+}
+
+// Llama a initMessaging() después de iniciar la app
+function iniciarApp() {
+    renderMesaGrid();
+    renderMenuMesero();
+    updateTime();
+    startListeners();
+    initMessaging();  // ← Verifica que la función que arranca tu app (como al cargar la página) ejecute este iniciarApp()
+}
+
+
+
 // ── HELPERS ───────────────────────────────────────────────
 function setLiveStatus(txt, isDemo) {
     const dot = document.getElementById("liveStatus");
@@ -651,3 +749,9 @@ function iniciarApp() {
 }
 
 mostrarPantallaDeNombre();
+
+// O pon esto al final de tu archivo:
+window.addEventListener('DOMContentLoaded', () => {
+    iniciarApp();
+});
+

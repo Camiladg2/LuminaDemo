@@ -9,6 +9,15 @@
 </head>
 <body>
 
+    <!-- ============ BANNER PROMO (solo lunes/miércoles) ============ -->
+    <div class="promo-banner" id="promoBanner" style="display:none">
+        <div class="promo-track">
+            <span class="promo-text">🍹 ¡Hoy 2x1 en cócteles! · 🍹 ¡Hoy 2x1 en cócteles! · 🍹 ¡Hoy 2x1 en cócteles! · 🍹 ¡Hoy 2x1 en cócteles! ·&nbsp;</span>
+            <span class="promo-text" aria-hidden="true">🍹 ¡Hoy 2x1 en cócteles! · 🍹 ¡Hoy 2x1 en cócteles! · 🍹 ¡Hoy 2x1 en cócteles! · 🍹 ¡Hoy 2x1 en cócteles! ·&nbsp;</span>
+        </div>
+        <button class="promo-close" id="promoCloseBtn" aria-label="Cerrar aviso">✕</button>
+    </div>
+
     <!-- ============ TOAST de confirmación ============ -->
     <div class="toast" id="toast">
         <img id="toastImg" src="" alt="">
@@ -26,7 +35,7 @@
 
     <!-- ============ BOTÓN FLOTANTE MESERO ============ -->
     <button class="waiter-fab" id="waiterFab" aria-label="Llamar al mesero">
-        🔔
+        💁‍♂️
     </button>
 
     <!-- ============ MODAL LLAMAR MESERO ============ -->
@@ -60,6 +69,153 @@
         </div>
     </div>
 
+    <!-- ============ MODAL BIENVENIDA / OCASIÓN ESPECIAL ============ -->
+    <div class="modal-overlay bienvenida-overlay" id="bienvenidaModal">
+        <div class="bienvenida-wrapper">
+
+            <!-- PASO 1: Selección de ocasión -->
+            <div class="bienvenida-step" id="bvStep1">
+                <div class="bv-header">
+                    <div class="bv-logo">Menu<span>AR</span></div>
+                    <h2 class="bv-title">¡Bienvenido! 🎉</h2>
+                    <p class="bv-sub">¿Estás celebrando algo especial hoy?</p>
+                </div>
+                <div class="bv-ocasiones">
+                    <button class="bv-ocasion-btn" data-ocasion="🎂 Cumpleaños">
+                        <span class="bv-ocasion-emoji">🎂</span>
+                        <span class="bv-ocasion-label">Cumpleaños</span>
+                    </button>
+                    <button class="bv-ocasion-btn" data-ocasion="🎓 Grado">
+                        <span class="bv-ocasion-emoji">🎓</span>
+                        <span class="bv-ocasion-label">Grado</span>
+                    </button>
+                    <button class="bv-ocasion-btn" data-ocasion="💍 Aniversario">
+                        <span class="bv-ocasion-emoji">💍</span>
+                        <span class="bv-ocasion-label">Aniversario</span>
+                    </button>
+                    <button class="bv-ocasion-btn" data-ocasion="💼 Reunión de negocios">
+                        <span class="bv-ocasion-emoji">💼</span>
+                        <span class="bv-ocasion-label">Negocios</span>
+                    </button>
+                    <button class="bv-ocasion-btn" data-ocasion="💑 Cita romántica">
+                        <span class="bv-ocasion-emoji">💑</span>
+                        <span class="bv-ocasion-label">Cita</span>
+                    </button>
+                    <button class="bv-ocasion-btn" data-ocasion="🎊 Otra celebración">
+                        <span class="bv-ocasion-emoji">🎊</span>
+                        <span class="bv-ocasion-label">Otra</span>
+                    </button>
+                </div>
+                <button class="bv-skip-btn" id="bvSkipBtn">No, es una visita normal →</button>
+            </div>
+
+            <!-- PASO 2: Obsequio de la casa -->
+            <div class="bienvenida-step" id="bvStep2" style="display:none">
+                <div class="bv-obsequio-header">
+                    <div class="bv-confetti">🎉✨🥂✨🎉</div>
+                    <h2 class="bv-title">¡Felicitaciones! 🥳</h2>
+                    <p class="bv-ocasion-elegida" id="bvOcasionElegida"></p>
+                    <p class="bv-regalo-txt">La casa te obsequia con cariño:</p>
+                </div>
+
+                <div class="bv-regalo-cards">
+                    <!-- Sangría -->
+                    <div class="bv-regalo-card">
+                        <div class="bv-model-wrap">
+                            <model-viewer
+                                src="Model/drink.glb"
+                                alt="Sangría de la casa"
+                                poster="Images/drink.png"
+                                auto-rotate camera-controls
+                                interaction-prompt="none"
+                                loading="eager">
+                            </model-viewer>
+                        </div>
+                        <div class="bv-regalo-info">
+                            <div class="bv-regalo-nombre">Sangría de la Casa</div>
+                            <div class="bv-regalo-desc">Frutos rojos, vino tinto y hierbabuena. Preparada al momento, solo para ti.</div>
+                            <div class="bv-regalo-gratis">🎁 De obsequio</div>
+                        </div>
+                    </div>
+
+                    <!-- Postre -->
+                    <div class="bv-regalo-card">
+                        <div class="bv-model-wrap">
+                            <model-viewer
+                                src="Model/carrot_cake.glb"
+                                alt="Postre de la casa"
+                                poster="Images/cake.png"
+                                auto-rotate camera-controls
+                                interaction-prompt="none"
+                                loading="eager">
+                            </model-viewer>
+                        </div>
+                        <div class="bv-regalo-info">
+                            <div class="bv-regalo-nombre">Postre Sorpresa</div>
+                            <div class="bv-regalo-desc">Personalizado para tu ocasión especial por nuestro chef.</div>
+                            <div class="bv-regalo-gratis">🎁 De obsequio</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="bv-continuar-btn" id="bvContinuarBtn">¡Gracias! Ver el menú →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ MODAL POSTRE DE CIERRE ============ -->
+    <div class="modal-overlay" id="postreModal">
+        <div class="modal-content postre-modal-content">
+            <div class="postre-modal-header">
+                <div class="postre-emoji">🍰</div>
+                <h2 class="postre-title">¿Cerramos con algo dulce?</h2>
+                <p class="postre-sub">Nuestros postres estrella para el final perfecto</p>
+            </div>
+            <div class="postre-opciones" id="postreOpciones">
+                <div class="postre-card" data-name="Volcán de Chocolate" data-price="$14.500" data-pricenum="14500" data-poster="Images/cake.png" data-model="Model/carrot_cake.glb">
+                    <div class="postre-model-wrap">
+                        <model-viewer src="Model/carrot_cake.glb" poster="Images/cake.png"
+                            auto-rotate camera-controls interaction-prompt="none" loading="lazy">
+                        </model-viewer>
+                    </div>
+                    <div class="postre-card-info">
+                        <div class="postre-card-nombre">Volcán de Chocolate</div>
+                        <div class="postre-card-desc">Caliente por dentro, irresistible por fuera</div>
+                        <div class="postre-card-precio">$14.500</div>
+                    </div>
+                    <button class="postre-elegir-btn">Agregar</button>
+                </div>
+                <div class="postre-card" data-name="Tiramisú Clásico" data-price="$12.000" data-pricenum="12000" data-poster="Images/cake.png" data-model="Model/carrot_cake.glb">
+                    <div class="postre-model-wrap">
+                        <model-viewer src="Model/carrot_cake.glb" poster="Images/cake.png"
+                            auto-rotate camera-controls interaction-prompt="none" loading="lazy">
+                        </model-viewer>
+                    </div>
+                    <div class="postre-card-info">
+                        <div class="postre-card-nombre">Tiramisú Clásico</div>
+                        <div class="postre-card-desc">Café, mascarpone y cacao artesanal</div>
+                        <div class="postre-card-precio">$12.000</div>
+                    </div>
+                    <button class="postre-elegir-btn">Agregar</button>
+                </div>
+                <div class="postre-card" data-name="Crema Brûlée" data-price="$11.500" data-pricenum="11500" data-poster="Images/cake.png" data-model="Model/carrot_cake.glb">
+                    <div class="postre-model-wrap">
+                        <model-viewer src="Model/carrot_cake.glb" poster="Images/cake.png"
+                            auto-rotate camera-controls interaction-prompt="none" loading="lazy">
+                        </model-viewer>
+                    </div>
+                    <div class="postre-card-info">
+                        <div class="postre-card-nombre">Crème Brûlée</div>
+                        <div class="postre-card-desc">Vainilla francesa con costra de azúcar caramelizada</div>
+                        <div class="postre-card-precio">$11.500</div>
+                    </div>
+                    <button class="postre-elegir-btn">Agregar</button>
+                </div>
+            </div>
+            <button class="postre-saltar-btn" id="postreSaltarBtn">No gracias, confirmar sin postre</button>
+        </div>
+    </div>
+
     <div class="phone-frame">
 
         <!-- NAV -->
@@ -85,14 +241,57 @@
         <!-- ============ VISTA MENÚ ============ -->
         <section class="view active" id="view-menu">
             <div class="menu-container">
+                <!-- PLATO MÁS PEDIDO DEL DÍA -->
+                <div class="plato-dia-banner" id="platoDiaBanner" style="display:none">
+                    <div class="plato-dia-badge">🔥 Más pedido hoy</div>
+                    <div class="plato-dia-info">
+                        <img class="plato-dia-img" id="platoDiaImg" src="" alt="">
+                        <div class="plato-dia-text">
+                            <div class="plato-dia-nombre" id="platoDiaNombre">—</div>
+                            <div class="plato-dia-veces" id="platoDiaVeces"></div>
+                        </div>
+                    </div>
+                    <button class="plato-dia-btn" id="platoDiaLoQuieroBtn">¡Lo quiero!</button>
+                </div>
+
                 <header class="menu-header animate__animated animate__fadeInDown">
                     <h1 class="restaurant-name">Bienvenido a MenuAR</h1>
                     <p class="restaurant-sub">Toca cualquier plato con el ícono <span class="ar-tag">360° AR</span> para verlo en 3D y en tu mesa</p>
                 </header>
-                <main class="menu-grid">
+
+                <!-- ============ FILTROS DE CATEGORÍA ============ -->
+                <div class="menu-filters">
+                    <div class="filter-groups" id="filterGroups">
+                        <button class="filter-group-btn active" data-group="todos">Todo</button>
+                        <button class="filter-group-btn" data-group="comida">🍽️ Comida</button>
+                        <button class="filter-group-btn" data-group="postres">🍰 Postres</button>
+                        <button class="filter-group-btn" data-group="bebidas">🥤 Bebidas</button>
+                    </div>
+                    <div class="filter-chips-scroll" id="filterChipsScroll">
+                        <button class="filter-chip active" data-categoria="todos">Todos</button>
+                        <button class="filter-chip" data-group="comida"    data-categoria="platos-fuertes">🍖 Platos fuertes</button>
+                        <button class="filter-chip" data-group="comida"    data-categoria="pastas">🍝 Pastas</button>
+                        <button class="filter-chip" data-group="comida"    data-categoria="parrilla">🔥 Parrilla</button>
+                        <button class="filter-chip" data-group="comida"    data-categoria="de-autor">✨ De autor</button>
+                        <button class="filter-chip" data-group="comida"    data-categoria="tablas">🧀 Tablas</button>
+                        <button class="filter-chip" data-group="comida"    data-categoria="hamburguesas">🍔 Hamburguesas</button>
+                        <button class="filter-chip" data-group="comida"    data-categoria="ensaladas">🥗 Ensaladas</button>
+                        <button class="filter-chip" data-group="postres"   data-categoria="postres">🍰 Postres</button>
+                        <button class="filter-chip" data-group="postres"   data-categoria="gelatos">🍨 Gelatos</button>
+                        <button class="filter-chip" data-group="postres"   data-categoria="copas-helado">🍧 Copas de helado</button>
+                        <button class="filter-chip" data-group="postres"   data-categoria="crepes">🥞 Crepes dulces</button>
+                        <button class="filter-chip" data-group="postres"   data-categoria="mini-wafles">🧇 Mini wafles</button>
+                        <button class="filter-chip" data-group="bebidas"   data-categoria="bebidas">🥤 Bebidas</button>
+                        <button class="filter-chip" data-group="bebidas"   data-categoria="cocteles">🍸 Cócteles</button>
+                        <button class="filter-chip" data-group="bebidas"   data-categoria="sangrias">🍷 Sangrías</button>
+                        <button class="filter-chip" data-group="bebidas"   data-categoria="licores">🥃 Licores nacionales</button>
+                    </div>
+                </div>
+
+                <main class="menu-grid" id="menuGrid">
 
                     <!-- Plato 1 -->
-                    <div class="menu-card animate__animated animate__fadeInUp" style="animation-delay:0.05s">
+                    <div data-categoria="tablas" class="menu-card animate__animated animate__fadeInUp" style="animation-delay:0.05s">
                         <div class="image-placeholder">
                             <img src="Images/papasnativas.jpg" alt="Papas Nativas" class="menu-img">
                         </div>
@@ -103,7 +302,7 @@
                     </div>
 
                     <!-- Plato 2: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="postres" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.1s"
                          data-model="Model/carrot_cake.glb"
                          data-poster="Images/cake.png"
@@ -124,7 +323,7 @@
                     </div>
 
                     <!-- Plato 3: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="bebidas" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.15s"
                          data-model="Model/drink.glb"
                          data-poster="Images/drink.png"
@@ -145,7 +344,7 @@
                     </div>
 
                     <!-- Plato 4: Hotspot -->
-                    <div class="menu-card border-gold animate__animated animate__fadeInUp"
+                    <div data-categoria="hamburguesas" class="menu-card border-gold animate__animated animate__fadeInUp"
                          style="animation-delay:0.2s"
                          id="openHotspotBtn">
                         <span class="ar-badge">360° + Hotspot</span>
@@ -162,7 +361,7 @@
                     </div>
 
                     <!-- Plato 5: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="de-autor" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.15s"
                          data-model="Model/sushi.glb"
                          data-poster="Images/sushi.png"
@@ -185,7 +384,7 @@
                     <!-- DUPLICADOS DE PRUEBAS BLOQUE 1-->
 
                     <!-- Plato 2: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="tablas" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.1s"
                          data-model="Model/carrot_cake.glb"
                          data-poster="Images/cake.png"
@@ -206,7 +405,7 @@
                     </div>
 
                     <!-- Plato 3: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="postres" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.15s"
                          data-model="Model/drink.glb"
                          data-poster="Images/drink.png"
@@ -227,7 +426,7 @@
                     </div>
 
                     <!-- Plato 4: Hotspot -->
-                    <div class="menu-card border-gold animate__animated animate__fadeInUp"
+                    <div data-categoria="bebidas" class="menu-card border-gold animate__animated animate__fadeInUp"
                          style="animation-delay:0.2s"
                          id="openHotspotBtn">
                         <span class="ar-badge">360° + Hotspot</span>
@@ -244,7 +443,7 @@
                     </div>
 
                     <!-- Plato 5: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="hamburguesas" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.15s"
                          data-model="Model/sushi.glb"
                          data-poster="Images/sushi.png"
@@ -267,7 +466,7 @@
                     <!-- DUPLICADOS DE PRUEBAS BLOQUE 2 -->
 
                     <!-- Plato 2: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="de-autor" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.1s"
                          data-model="Model/carrot_cake.glb"
                          data-poster="Images/cake.png"
@@ -288,7 +487,7 @@
                     </div>
 
                     <!-- Plato 3: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="tablas" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.15s"
                          data-model="Model/drink.glb"
                          data-poster="Images/drink.png"
@@ -309,7 +508,7 @@
                     </div>
 
                     <!-- Plato 4: Hotspot -->
-                    <div class="menu-card border-gold animate__animated animate__fadeInUp"
+                    <div data-categoria="postres" class="menu-card border-gold animate__animated animate__fadeInUp"
                          style="animation-delay:0.2s"
                          id="openHotspotBtn">
                         <span class="ar-badge">360° + Hotspot</span>
@@ -326,7 +525,7 @@
                     </div>
 
                     <!-- Plato 5: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="bebidas" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.15s"
                          data-model="Model/sushi.glb"
                          data-poster="Images/sushi.png"
@@ -349,7 +548,7 @@
                     <!-- DUPLICADOS DE PRUEBAS BLOQUE 3 -->
 
                     <!-- Plato 2: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="hamburguesas" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.1s"
                          data-model="Model/carrot_cake.glb"
                          data-poster="Images/cake.png"
@@ -370,7 +569,7 @@
                     </div>
 
                     <!-- Plato 3: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="de-autor" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.15s"
                          data-model="Model/drink.glb"
                          data-poster="Images/drink.png"
@@ -391,7 +590,7 @@
                     </div>
 
                     <!-- Plato 4: Hotspot -->
-                    <div class="menu-card border-gold animate__animated animate__fadeInUp"
+                    <div data-categoria="tablas" class="menu-card border-gold animate__animated animate__fadeInUp"
                          style="animation-delay:0.2s"
                          id="openHotspotBtn">
                         <span class="ar-badge">360° + Hotspot</span>
@@ -408,7 +607,7 @@
                     </div>
 
                     <!-- Plato 5: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="postres" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.15s"
                          data-model="Model/sushi.glb"
                          data-poster="Images/sushi.png"
@@ -431,7 +630,7 @@
                     <!-- DUPLICADOS DE PRUEBAS BLOQUE 4-->
 
                     <!-- Plato 2: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="bebidas" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.1s"
                          data-model="Model/carrot_cake.glb"
                          data-poster="Images/cake.png"
@@ -452,7 +651,7 @@
                     </div>
 
                     <!-- Plato 3: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="hamburguesas" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.15s"
                          data-model="Model/drink.glb"
                          data-poster="Images/drink.png"
@@ -473,7 +672,7 @@
                     </div>
 
                     <!-- Plato 4: Hotspot -->
-                    <div class="menu-card border-gold animate__animated animate__fadeInUp"
+                    <div data-categoria="de-autor" class="menu-card border-gold animate__animated animate__fadeInUp"
                          style="animation-delay:0.2s"
                          id="openHotspotBtn">
                         <span class="ar-badge">360° + Hotspot</span>
@@ -490,7 +689,7 @@
                     </div>
 
                     <!-- Plato 5: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="tablas" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.15s"
                          data-model="Model/sushi.glb"
                          data-poster="Images/sushi.png"
@@ -513,7 +712,7 @@
                     <!-- DUPLICADOS DE PRUEBAS BLOQUE 5-->
 
                     <!-- Plato 2: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="postres" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.1s"
                          data-model="Model/carrot_cake.glb"
                          data-poster="Images/cake.png"
@@ -534,7 +733,7 @@
                     </div>
 
                     <!-- Plato 3: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="bebidas" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.15s"
                          data-model="Model/drink.glb"
                          data-poster="Images/drink.png"
@@ -555,7 +754,7 @@
                     </div>
 
                     <!-- Plato 4: Hotspot -->
-                    <div class="menu-card border-gold animate__animated animate__fadeInUp"
+                    <div data-categoria="hamburguesas" class="menu-card border-gold animate__animated animate__fadeInUp"
                          style="animation-delay:0.2s"
                          id="openHotspotBtn">
                         <span class="ar-badge">360° + Hotspot</span>
@@ -572,7 +771,7 @@
                     </div>
 
                     <!-- Plato 5: 360° AR -->
-                    <div class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                    <div data-categoria="de-autor" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
                          style="animation-delay:0.15s"
                          data-model="Model/sushi.glb"
                          data-poster="Images/sushi.png"
@@ -592,7 +791,37 @@
                         </div>
                     </div>
 
+                    <!-- Plato 2: 360° AR / MODELOS DE IOS -->
+                    <div data-categoria="postres" class="menu-card border-gold open-3d animate__animated animate__fadeInUp"
+                         style="animation-delay:0.1s"
+                         data-model="Model/cupcake.glb"
+                         data-ios-model="Model/cupcake.usdz" 
+                         data-poster="Images/cupcake.png"
+                         data-name="Cupcake"
+                         data-price="$17.800"
+                         data-story="Nuestro postre insignia: un volcán de chocolate caliente que se desborda al primer corte, inspirado en la receta original de la abuela de la casa.">
+                        <span class="ar-badge">360° AR</span>
+                        <div class="model-menu-wrapper">
+                            <model-viewer src="Model/cupcake.glb" alt="Cupcake"
+                                ios-src="Model/cupcake.usdz"
+                                ar
+                                ar-modes="webxr scene-viewer quick-look"
+                                poster="Images/cupcake.png" loading="eager" reveal="auto"
+                                auto-rotate camera-controls interaction-prompt="none">
+                            </model-viewer>
+                        </div>
+                        <div class="card-info">
+                            <h3>Cupcake</h3>
+                            <p class="price">$8.000</p>
+                        </div>
+                    </div>
+
                 </main>
+
+                <div class="filter-empty" id="filterEmpty" style="display:none">
+                    <div class="filter-empty-icon">🍽️</div>
+                    <p>Aún no tenemos platos cargados en esta categoría.<br>¡Vuelve pronto!</p>
+                </div>
             </div>
         </section>
 
@@ -630,6 +859,10 @@
                         <span class="qty-num" id="hotspotQtyNum">1</span>
                         <button class="qty-btn" id="hotspotQtyPlus" type="button">+</button>
                     </div>
+                </div>
+                <div class="dish-note-section hotspot-note-section">
+                    <label class="dish-note-label" for="hotspotNoteInput">✏️ Nota para cocina <span class="dish-note-opt">(opcional)</span></label>
+                    <textarea id="hotspotNoteInput" class="dish-note-input" placeholder="Ej: sin salsa, extra queso, sin vegetales…" maxlength="120" rows="2"></textarea>
                 </div>
                 <button class="order-btn-flat" id="orderFromHotspot">¡Lo quiero!</button>
             </div>
@@ -677,6 +910,12 @@
                     <span class="qty-num" id="modalQtyNum">1</span>
                     <button class="qty-btn" id="modalQtyPlus" type="button">+</button>
                 </div>
+            </div>
+
+            <!-- Nota especial para cocina -->
+            <div class="dish-note-section">
+                <label class="dish-note-label" for="modalNoteInput">✏️ Nota para cocina <span class="dish-note-opt">(opcional)</span></label>
+                <textarea id="modalNoteInput" class="dish-note-input" placeholder="Ej: sin salsa, sin cebolla, término medio…" maxlength="120" rows="2"></textarea>
             </div>
 
             <div class="modal-actions">

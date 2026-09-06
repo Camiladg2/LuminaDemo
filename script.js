@@ -36,6 +36,54 @@ async function initFirebase() {
     console.log("Firebase conectado ✓");
 }
 
+// ============ OCASIÓN ESPECIAL ============
+let ocasionEspecial = null;   // null = sin ocasión; string = tipo de celebración
+
+// ── Bienvenida: selección de ocasión ─────────────────────
+function initBienvenida() {
+    // Si ya se vio esta sesión, no mostrar de nuevo
+    if (sessionStorage.getItem("menuAR_bienvenida_vista")) return;
+
+    const modal = document.getElementById("bienvenidaModal");
+    modal.classList.add("active");
+
+    // Botones de ocasión
+    document.querySelectorAll(".bv-ocasion-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".bv-ocasion-btn").forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+            ocasionEspecial = btn.dataset.ocasion;
+            // Ir al paso 2 después de un pequeño delay para ver la selección
+            setTimeout(() => mostrarObsequio(ocasionEspecial), 280);
+        });
+    });
+
+    // Saltar (visita normal)
+    document.getElementById("bvSkipBtn").addEventListener("click", () => {
+        ocasionEspecial = null;
+        cerrarBienvenida();
+    });
+
+    // Continuar desde paso 2
+    document.getElementById("bvContinuarBtn").addEventListener("click", () => {
+        cerrarBienvenida();
+    });
+}
+
+function mostrarObsequio(ocasion) {
+    document.getElementById("bvStep1").style.display = "none";
+    document.getElementById("bvStep2").style.display = "flex";
+    document.getElementById("bvOcasionElegida").textContent =
+        `Celebramos contigo: ${ocasion}`;
+}
+
+function cerrarBienvenida() {
+    sessionStorage.setItem("menuAR_bienvenida_vista", "1");
+    const modal = document.getElementById("bienvenidaModal");
+    modal.classList.add("closing");
+    setTimeout(() => { modal.classList.remove("active","closing"); }, 400);
+}
+
 // ============ MESA (desde URL o selector demo) ============
 let mesaActual = null;
 
@@ -177,6 +225,12 @@ function renderCart() {
                 <div class="cart-item-info">
                     <h4>${item.name}</h4>
                     <p>${item.price} c/u · ${formatPrice(item.priceNum * item.qty)}</p>
+                    ${item.nota ? `<div class="cart-item-nota">✏️ ${item.nota}</div>` : ""}
+                    <div class="cart-nota-edit">
+                        <input type="text" class="cart-nota-input" data-index="${index}"
+                            placeholder="Añadir nota para cocina…"
+                            value="${item.nota || ""}" maxlength="120">
+                    </div>
                 </div>
                 <div class="cart-item-qty-control">
                     <button class="qty-btn cart-qty-minus" data-index="${index}" type="button">−</button>
@@ -191,6 +245,13 @@ function renderCart() {
         });
         cartList.querySelectorAll(".cart-qty-plus").forEach(btn => {
             btn.addEventListener("click", (e) => cambiarCantidadCarrito(parseInt(e.currentTarget.dataset.index), +1));
+        });
+        // Guardar nota en tiempo real mientras el usuario escribe
+        cartList.querySelectorAll(".cart-nota-input").forEach(input => {
+            input.addEventListener("input", (e) => {
+                const idx = parseInt(e.currentTarget.dataset.index);
+                if (cart[idx]) cart[idx].nota = e.currentTarget.value.trim();
+            });
         });
     }
 
@@ -210,6 +271,7 @@ async function guardarPedido(items, total, mesa) {
         total:      total,
         estado:     "pendiente",
         origen:     "cliente",
+        ocasion:    ocasionEspecial || null,
         created_at: new Date().toISOString()
     };
 
@@ -315,7 +377,8 @@ document.querySelectorAll(".open-3d").forEach(card => {
             name:     card.dataset.name,
             price:    card.dataset.price,
             poster:   card.dataset.poster,
-            priceNum: parseInt(card.dataset.price.replace(/\D/g, ""))
+            priceNum: parseInt(card.dataset.price.replace(/\D/g, "")),
+            categoria: card.dataset.categoria || ""
         };
 
         modelViewerModal.setAttribute("src",    card.dataset.model);
@@ -347,24 +410,28 @@ document.getElementById("arLaunchBtn").addEventListener("click", () => {
 // ============ ¡LO QUIERO! — modal 3D ============
 document.getElementById("orderFromModal").addEventListener("click", () => {
     if (!activeItem) return;
-    addToCart(activeItem, modalQty);
+    const nota = document.getElementById("modalNoteInput").value.trim();
+    addToCart({ ...activeItem, nota }, modalQty);
     modal3D.classList.remove("active");
     updateFab();
     showToast(activeItem, modalQty);
     openCartModal();
     modalQty = 1;
     renderModalQty();
+    document.getElementById("modalNoteInput").value = "";
 });
 
 // ============ ¡LO QUIERO! — hotspot ============
 document.getElementById("orderFromHotspot").addEventListener("click", () => {
-    const item = { name: "Hamburguesa Insignia", price: "$38.000", poster: "Images/burguer.png", priceNum: 38000 };
+    const nota = document.getElementById("hotspotNoteInput").value.trim();
+    const item = { name: "Hamburguesa Insignia", price: "$38.000", poster: "Images/burguer.png", priceNum: 38000, categoria: "hamburguesas", nota };
     addToCart(item, hotspotQty);
     updateFab();
     showToast(item, hotspotQty);
     openCartModal();
     hotspotQty = 1;
     renderHotspotQty();
+    document.getElementById("hotspotNoteInput").value = "";
 });
 
 // ============ MODAL CARRITO ============
@@ -380,13 +447,53 @@ document.getElementById("keepBrowsingBtn").addEventListener("click", () => {
     switchView("view-menu");
 });
 
-document.getElementById("confirmCartBtn").addEventListener("click", async () => {
+document.getElementById("confirmCartBtn").addEventListener("click", () => {
     if (cart.length === 0) return;
-
-    const itemsParaGuardar = cart.map(i => ({ name: i.name, price: i.price, priceNum: i.priceNum, poster: i.poster, qty: i.qty }));
-    await guardarPedido(itemsParaGuardar, formatPrice(recalcTotal()), mesaActual);
-
+    // Antes de confirmar, preguntar por postre
     cartModal.classList.remove("active");
+    mostrarModalPostre();
+});
+
+// ── Modal postre ─────────────────────────────────────────
+function mostrarModalPostre() {
+    document.getElementById("postreModal").classList.add("active");
+}
+
+document.querySelectorAll(".postre-elegir-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const card = btn.closest(".postre-card");
+        const item = {
+            name:     card.dataset.name,
+            price:    card.dataset.price,
+            priceNum: parseInt(card.dataset.pricenum),
+            poster:   card.dataset.poster,
+            categoria:"postres",
+            nota:     ""
+        };
+        addToCart(item, 1);
+        updateFab();
+        document.getElementById("postreModal").classList.remove("active");
+        confirmarPedidoFinal();
+    });
+});
+
+document.getElementById("postreSaltarBtn").addEventListener("click", () => {
+    document.getElementById("postreModal").classList.remove("active");
+    confirmarPedidoFinal();
+});
+
+async function confirmarPedidoFinal() {
+    if (cart.length === 0) return;
+    const itemsParaGuardar = cart.map(i => ({
+        name:      i.name,
+        price:     i.price,
+        priceNum:  i.priceNum,
+        poster:    i.poster,
+        qty:       i.qty,
+        nota:      i.nota || "",
+        categoria: i.categoria || ""
+    }));
+    await guardarPedido(itemsParaGuardar, formatPrice(recalcTotal()), mesaActual);
 
     document.getElementById("successItems").innerHTML = cart.map(item => `
         <div class="success-item animate__animated animate__fadeInUp">
@@ -398,7 +505,7 @@ document.getElementById("confirmCartBtn").addEventListener("click", async () => 
     document.getElementById("successModal").classList.add("active");
     cart = [];
     updateFab();
-});
+}
 
 // ============ MODAL ÉXITO ============
 const successModal = document.getElementById("successModal");
@@ -485,5 +592,123 @@ async function enviarLlamadaMesero(reason) {
     localStorage.setItem("menuAR_llamadas", JSON.stringify(existentes));
 }
 
+// ============ PLATO MÁS PEDIDO DEL DÍA ============
+async function cargarPlatoDelDia() {
+    let todosPedidos = [];
+    if (USE_FIREBASE) {
+        try {
+            await initFirebase();
+            const { collection, getDocs } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+            const snap = await getDocs(collection(db, "pedidos"));
+            todosPedidos = snap.docs.map(d => d.data());
+        } catch(e) {
+            todosPedidos = JSON.parse(localStorage.getItem("menuAR_pedidos") || "[]");
+        }
+    } else {
+        todosPedidos = JSON.parse(localStorage.getItem("menuAR_pedidos") || "[]");
+    }
+
+    if (todosPedidos.length === 0) return;
+
+    // Contar cuántas veces aparece cada plato
+    const conteo = {};
+    todosPedidos.forEach(p => {
+        (p.items || []).forEach(i => {
+            conteo[i.name] = (conteo[i.name] || { count: 0, poster: i.poster, price: i.price, priceNum: i.priceNum, categoria: i.categoria });
+            conteo[i.name].count += (i.qty || 1);
+            conteo[i.name].poster    = i.poster    || conteo[i.name].poster;
+            conteo[i.name].price     = i.price     || conteo[i.name].price;
+            conteo[i.name].priceNum  = i.priceNum  || conteo[i.name].priceNum;
+            conteo[i.name].categoria = i.categoria || conteo[i.name].categoria;
+        });
+    });
+
+    const entries = Object.entries(conteo).sort((a, b) => b[1].count - a[1].count);
+    if (entries.length === 0) return;
+
+    const [nombre, { count, poster, price, priceNum, categoria }] = entries[0];
+    const banner = document.getElementById("platoDiaBanner");
+    document.getElementById("platoDiaNombre").textContent = nombre;
+    document.getElementById("platoDiaVeces").textContent = count === 1 ? "1 pedido hoy" : `${count} pedidos hoy`;
+    document.getElementById("platoDiaImg").src = poster || "";
+    banner.style.display = "flex";
+
+    const btn = document.getElementById("platoDiaLoQuieroBtn");
+    btn.onclick = () => {
+        addToCart({ name: nombre, price: price || "", priceNum: priceNum || 0, poster: poster || "", categoria: categoria || "" }, 1);
+        updateFab();
+        showToast({ name: nombre, poster: poster || "" }, 1);
+        openCartModal();
+    };
+}
+
 // ============ INIT ============
 detectarMesa();
+initBienvenida();
+
+// ============ FILTRO DE CATEGORÍAS DEL MENÚ ============
+function initFiltrosMenu() {
+    const groupBtns = document.querySelectorAll(".filter-group-btn");
+    const chips      = document.querySelectorAll(".filter-chip");
+    const cards       = document.querySelectorAll("#menuGrid .menu-card");
+    const emptyState  = document.getElementById("filterEmpty");
+    const menuGrid    = document.getElementById("menuGrid");
+
+    function aplicarFiltro(categoria) {
+        let visibles = 0;
+        cards.forEach(card => {
+            const coincide = categoria === "todos" || card.dataset.categoria === categoria;
+            card.classList.toggle("filter-hidden", !coincide);
+            if (coincide) visibles++;
+        });
+        menuGrid.style.display   = visibles === 0 ? "none" : "grid";
+        emptyState.style.display = visibles === 0 ? "block" : "none";
+    }
+
+    function mostrarChipsDelGrupo(grupo) {
+        chips.forEach(chip => {
+            const esTodos = chip.dataset.categoria === "todos";
+            const pertenece = esTodos || grupo === "todos" || chip.dataset.group === grupo;
+            chip.classList.toggle("filter-chip-hidden", !pertenece);
+        });
+    }
+
+    function activarChip(categoria) {
+        chips.forEach(c => c.classList.toggle("active", c.dataset.categoria === categoria));
+    }
+
+    groupBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            groupBtns.forEach(b => b.classList.toggle("active", b === btn));
+            const grupo = btn.dataset.group;
+            mostrarChipsDelGrupo(grupo);
+            activarChip("todos");
+            aplicarFiltro("todos");
+            document.getElementById("filterChipsScroll").scrollTo({ left: 0, behavior: "smooth" });
+        });
+    });
+
+    chips.forEach(chip => {
+        chip.addEventListener("click", () => {
+            activarChip(chip.dataset.categoria);
+            aplicarFiltro(chip.dataset.categoria);
+        });
+    });
+}
+initFiltrosMenu();
+
+// ============ BANNER PROMO 2x1 — solo lunes y miércoles ============
+function initPromoBanner() {
+    const diaSemana = new Date().getDay(); // 0=domingo … 1=lunes … 3=miércoles
+    const esDiaPromo = diaSemana === 1 || diaSemana === 3;
+    if (!esDiaPromo) return;
+    if (sessionStorage.getItem("menuAR_promo_cerrado") === "1") return;
+
+    document.getElementById("promoBanner").style.display = "flex";
+}
+document.getElementById("promoCloseBtn").addEventListener("click", () => {
+    document.getElementById("promoBanner").style.display = "none";
+    sessionStorage.setItem("menuAR_promo_cerrado", "1");
+});
+initPromoBanner();
+cargarPlatoDelDia();

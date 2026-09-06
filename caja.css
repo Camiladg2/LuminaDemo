@@ -425,3 +425,64 @@ body {
     color: #888;
     margin-top: 2px;
 }
+
+/* ====== FILTROS MÉTODO DE PAGO — FACTURADOS ====== */
+.c-metodo-filtros {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.c-metodo-chip {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    color: #888;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.c-metodo-chip:hover { border-color: #d4af37; color: #d4af37; }
+.c-metodo-chip.active {
+    background-color: #d4af37;
+    border-color: #d4af37;
+    color: #111;
+}
+.c-metodo-chip-calendario { margin-left: auto; }
+
+.c-modal-historial { max-width: 480px; }
+.c-historial-day-summary { display: flex; flex-direction: column; gap: 12px; }
+.c-historial-empty { text-align: center; padding: 24px 10px; color: #555; font-size: 13px; }
+.c-historial-lista { display: flex; flex-direction: column; gap: 8px; max-height: 240px; overflow-y: auto; }
+.c-historial-item {
+    display: flex; justify-content: space-between; align-items: center;
+    background-color: #1a1a1a; border-radius: 8px; padding: 9px 12px; font-size: 12px;
+}
+.c-historial-item-meta { color: #888; }
+.c-historial-item-total { color: #d4af37; font-weight: 700; }
+
+.c-facturados-total {
+    font-size: 13px;
+    font-weight: 700;
+    color: #d4af37;
+    margin-bottom: 14px;
+    padding: 8px 12px;
+    background-color: rgba(212,175,55,0.08);
+    border-radius: 8px;
+    border: 1px solid rgba(212,175,55,0.2);
+}
+
+/* ====== NOTA DE COCINA EN TARJETAS CAJA ====== */
+.c-nota-chip {
+    font-style: normal;
+    font-size: 11px;
+    color: #f5a623;
+    background-color: rgba(245,166,35,0.1);
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-left: 4px;
+}
